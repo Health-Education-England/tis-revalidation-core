@@ -1,5 +1,61 @@
+debug: true
+spring:
+  application:
+    name: tis-revalidation-core
+  jackson:
+    serialization.write_dates_as_timestamps: false
+    serialization.indent_output: true
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+  data:
+    mongodb:
+      uri: mongodb://${MONGODB_USERNAME:root}:${MONGODB_PASSWORD:password}@${MONGODB_HOST:localhost}:${MONGODB_PORT:27017}/${MONGODB_DATABASE:revalidation}?authSource=admin&authMechanism=SCRAM-SHA-1
+
 server:
-  # TODO: Update server port to a unique value.
-  port: 8080
   servlet:
     context-path: /revalidation
+  # TODO: Update server port to a unique value.
+  port: ${SERVICE_PORT:8080}
+
+logging:
+  level:
+    uk.nhs.hee.tis.revalidation.core: ${LOGGING_LEVEL:INFO}
+    org.springframework.data.mongodb.core.MongoTemplate: ${LOGGING_LEVEL:ERROR}
+    org.springframework.boot.autoconfigure: ${LOGGING_LEVEL:ERROR}
+
+  file:
+    name: ${LOG_DIR:${HOME}}/revalidation-core.log
+
+management:
+  endpoints:
+    health:
+      enabled: true
+    web:
+      exposure:
+        include: '*'
+  server:
+    servlet:
+      context-path: /management
+
+app:
+  error:
+    exchange: "ex.error"
+    limit.retries: true
+
+  reval:
+    event.store.db: ${EVENT_STORE:eventstore}
+    event.store.collection: ${EVENT_STORE_COLLECTION:events_log}
+    pagination.pageSize: ${PAGINATION_PAGE_SIZE:20}
+    tcs.url: ${TCS_URL:http:localhost:8080/tcsmock/api/revalidation}
+
+  validation:
+    sort.fields: ${SORT_FIELD:submissionDate,doctorFirstName,doctorLastName}
+    sort.order: ${SORT_ORDER:asc,desc}
+
+  rabbit:
+    exchange: ${EXCHANGE:gmc-connect-exchange}
+    queue: ${QUEUE:gmc-doctors-queue}
+    routingKey: ${ROUTING_KEY:uk.nhs.hee}
