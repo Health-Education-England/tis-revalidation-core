@@ -1,6 +1,41 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright 2020 Crown Copyright (Health Education England)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+ * associated documentation files (the "Software"), to deal in the Software without restriction,
+ * including without limitation the rights to use, copy, modify, merge, publish, distribute,
+ * sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or
+ * substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
+ * NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
 package uk.nhs.hee.tis.revalidation.core.service;
 
+import static java.time.LocalDate.now;
+import static java.util.List.of;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.when;
+import static org.springframework.data.domain.Sort.Direction.DESC;
+import static org.springframework.data.domain.Sort.by;
+import static uk.nhs.hee.tis.revalidation.core.entity.UnderNotice.ON_HOLD;
+import static uk.nhs.hee.tis.revalidation.core.entity.UnderNotice.YES;
+
 import com.github.javafaker.Faker;
+import java.time.LocalDate;
+import java.util.Map;
+import java.util.stream.Stream;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,21 +52,6 @@ import uk.nhs.hee.tis.revalidation.core.entity.DoctorsForDB;
 import uk.nhs.hee.tis.revalidation.core.entity.RecommendationStatus;
 import uk.nhs.hee.tis.revalidation.core.entity.UnderNotice;
 import uk.nhs.hee.tis.revalidation.core.repository.DoctorsForDBRepository;
-
-import java.time.LocalDate;
-import java.util.Map;
-import java.util.stream.Stream;
-
-import static java.time.LocalDate.now;
-import static java.util.List.of;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.when;
-import static org.springframework.data.domain.Sort.Direction.DESC;
-import static org.springframework.data.domain.Sort.by;
-import static uk.nhs.hee.tis.revalidation.core.entity.UnderNotice.ON_HOLD;
-import static uk.nhs.hee.tis.revalidation.core.entity.UnderNotice.YES;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DoctorsForDBServiceTest {
@@ -60,8 +80,8 @@ public class DoctorsForDBServiceTest {
   private LocalDate subDate1, subDate2, subDate3, subDate4, subDate5;
   private LocalDate addedDate1, addedDate2, addedDate3, addedDate4, addedDate5;
   private UnderNotice un1, un2, un3, un4, un5;
-  private String sanction1, sanction2, sanction3, sanction4,sanction5;
-  private RecommendationStatus status1, status2, status3, status4,status5;
+  private String sanction1, sanction2, sanction3, sanction4, sanction5;
+  private RecommendationStatus status1, status2, status3, status4, status5;
   private LocalDate cctDate1, cctDate2, cctDate3, cctDate4, cctDate5;
   private String progName1, progName2, progName3, progName4, progName5;
   private String memType1, memType2, memType3, memType4, memType5;
@@ -78,8 +98,11 @@ public class DoctorsForDBServiceTest {
 
     final Pageable pageableAndSortable = PageRequest.of(1, 20, by(DESC, "submissionDate"));
     when(repository.findAll(pageableAndSortable, "")).thenReturn(page);
-    when(traineeCoreService.getTraineeInformationFromCore(of(gmcRef1,gmcRef2, gmcRef3, gmcRef4, gmcRef5)))
-        .thenReturn(Map.of(gmcRef1, coreDTO1, gmcRef2, coreDTO2, gmcRef3, coreDTO3, gmcRef4, coreDTO4, gmcRef5, coreDTO5));
+    when(traineeCoreService
+        .getTraineeInformationFromCore(of(gmcRef1, gmcRef2, gmcRef3, gmcRef4, gmcRef5)))
+        .thenReturn(
+            Map.of(gmcRef1, coreDTO1, gmcRef2, coreDTO2, gmcRef3, coreDTO3, gmcRef4, coreDTO4,
+                gmcRef5, coreDTO5));
     when(coreDTO1.getCctDate()).thenReturn(cctDate1);
     when(coreDTO1.getProgrammeName()).thenReturn(progName1);
     when(coreDTO1.getProgrammeMembershipType()).thenReturn(memType1);
@@ -195,7 +218,7 @@ public class DoctorsForDBServiceTest {
 
     final Pageable pageableAndSortable = PageRequest.of(1, 20, by(DESC, "submissionDate"));
     when(repository.findAllByUnderNoticeIn(pageableAndSortable, "", YES, ON_HOLD)).thenReturn(page);
-    when(traineeCoreService.getTraineeInformationFromCore(of(gmcRef1,gmcRef2)))
+    when(traineeCoreService.getTraineeInformationFromCore(of(gmcRef1, gmcRef2)))
         .thenReturn(Map.of(gmcRef1, coreDTO1, gmcRef2, coreDTO2));
     when(coreDTO1.getCctDate()).thenReturn(cctDate1);
     when(coreDTO1.getProgrammeName()).thenReturn(progName1);
@@ -255,7 +278,7 @@ public class DoctorsForDBServiceTest {
   @Test
   public void shouldReturnEmptyListOfDoctorsWhenNoRecordFound() {
     final Pageable pageableAndSortable = PageRequest.of(1, 20, by(DESC, "submissionDate"));
-    when(repository.findAll(pageableAndSortable,"")).thenReturn(page);
+    when(repository.findAll(pageableAndSortable, "")).thenReturn(page);
     when(page.get()).thenReturn(Stream.of());
     when(repository.countByUnderNoticeIn(YES, ON_HOLD)).thenReturn(0l);
     final var requestDTO = TraineeRequestDto.builder()
@@ -277,7 +300,7 @@ public class DoctorsForDBServiceTest {
 
     final Pageable pageableAndSortable = PageRequest.of(1, 20, by(DESC, "submissionDate"));
     when(repository.findAll(pageableAndSortable, "query")).thenReturn(page);
-    when(traineeCoreService.getTraineeInformationFromCore(of(gmcRef1,gmcRef4)))
+    when(traineeCoreService.getTraineeInformationFromCore(of(gmcRef1, gmcRef4)))
         .thenReturn(Map.of(gmcRef1, coreDTO1, gmcRef4, coreDTO4));
     when(coreDTO1.getCctDate()).thenReturn(cctDate1);
     when(coreDTO1.getProgrammeName()).thenReturn(progName1);
@@ -408,10 +431,15 @@ public class DoctorsForDBServiceTest {
     grade4 = faker.lorem().characters(5);
     grade5 = faker.lorem().characters(5);
 
-    doc1 = new DoctorsForDB(gmcRef1, fname1, lname1, subDate1, addedDate1, un1, sanction1, status1, now(),"HAA");
-    doc2 = new DoctorsForDB(gmcRef2, fname2, lname2, subDate2, addedDate2, un2, sanction2, status2, now(),"HAA");
-    doc3 = new DoctorsForDB(gmcRef3, fname3, lname3, subDate3, addedDate3, un3, sanction3, status3, now(),"HAA");
-    doc4 = new DoctorsForDB(gmcRef4, fname4, lname4, subDate4, addedDate4, un4, sanction4, status4, now(),"HAA");
-    doc5 = new DoctorsForDB(gmcRef5, fname5, lname5, subDate5, addedDate5, un5, sanction5, status5, now(),"HAA");
+    doc1 = new DoctorsForDB(gmcRef1, fname1, lname1, subDate1, addedDate1, un1, sanction1, status1,
+        now(), "HAA");
+    doc2 = new DoctorsForDB(gmcRef2, fname2, lname2, subDate2, addedDate2, un2, sanction2, status2,
+        now(), "HAA");
+    doc3 = new DoctorsForDB(gmcRef3, fname3, lname3, subDate3, addedDate3, un3, sanction3, status3,
+        now(), "HAA");
+    doc4 = new DoctorsForDB(gmcRef4, fname4, lname4, subDate4, addedDate4, un4, sanction4, status4,
+        now(), "HAA");
+    doc5 = new DoctorsForDB(gmcRef5, fname5, lname5, subDate5, addedDate5, un5, sanction5, status5,
+        now(), "HAA");
   }
 }

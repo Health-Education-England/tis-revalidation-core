@@ -21,6 +21,8 @@
 
 package uk.nhs.hee.tis.revalidation.core;
 
+import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.boot.SpringApplication;
@@ -29,8 +31,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.ws.client.core.WebServiceTemplate;
-
-import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS;
 
 @SpringBootApplication
 public class RevalidationCoreApplication {
@@ -61,7 +61,7 @@ public class RevalidationCoreApplication {
 
   @Bean
   public WebServiceTemplate webServiceTemplate() {
-    final WebServiceTemplate webServiceTemplate =  new WebServiceTemplate();
+    final WebServiceTemplate webServiceTemplate = new WebServiceTemplate();
     webServiceTemplate.setMarshaller(marshaller());
     webServiceTemplate.setUnmarshaller(marshaller());
     return webServiceTemplate;
