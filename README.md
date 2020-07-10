@@ -4,10 +4,8 @@
 Revalidation core service provide trainee information to other microservices.
 
 ## TODO
- - Set up Sentry project.
  - Provide `SENTRY_DSN` and `SENTRY_ENVIRONMENT` as environmental variables
    during deployment.
- - Add repository to SonarCloud.
  - Add repository to Dependabot.
  - Update the references to `tis-template` in [task-definition].
 
