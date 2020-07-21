@@ -5,7 +5,7 @@ Revalidation core service provide trainee information to other microservices.
 
 ## TODO
  - Provide `SENTRY_DSN` and `SENTRY_ENVIRONMENT` as environmental variables
-   during deployment.
+   during deployment and need to make the `SENTRY_ENVIRONMENT` dynamic in the future.
  - Add repository to Dependabot.
  - Update the references to `tis-template` in [task-definition].
 
