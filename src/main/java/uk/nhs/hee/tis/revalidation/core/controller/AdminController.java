@@ -19,21 +19,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package uk.nhs.hee.tis.revalidation.core;
+package uk.nhs.hee.tis.revalidation.core.controller;
 
-import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProvider;
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import java.util.List;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import uk.nhs.hee.tis.revalidation.core.dto.AdminDto;
+import uk.nhs.hee.tis.revalidation.core.service.AdminService;
 
-@SpringBootTest
-class RevalidationCoreApplicationTest {
+@RestController
+@RequestMapping("/api/admins")
+public class AdminController {
 
-  @MockBean
-  private AWSCognitoIdentityProvider identityProvider;
+  private AdminService service;
 
-  @Test
-  void contextLoads() {
+  AdminController(AdminService service) {
+    this.service = service;
+  }
 
+  @ApiOperation(value = "Get a list of admins")
+  @ApiResponse(code = 200, message = "Look up successful",
+      response = AdminDto.class, responseContainer = "List")
+  @GetMapping
+  public ResponseEntity<List<AdminDto>> getAssignableAdmins() {
+    List<AdminDto> admins = service.getAssignableAdmins();
+    return ResponseEntity.ok(admins);
   }
 }

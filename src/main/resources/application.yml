@@ -17,8 +17,7 @@ spring:
 server:
   servlet:
     context-path: /revalidation
-  # TODO: Update server port to a unique value.
-  port: ${SERVICE_PORT:8080}
+  port: ${SERVICE_PORT:8091}
 
 logging:
   level:
@@ -41,6 +40,10 @@ management:
       context-path: /management
 
 app:
+  cognito:
+    admin-group: ${ADMIN_GROUP:}
+    admin-user-pool: ${ADMIN_USER_POOL:}
+
   error:
     exchange: "ex.error"
     limit.retries: true

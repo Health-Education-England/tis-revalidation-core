@@ -19,21 +19,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package uk.nhs.hee.tis.revalidation.core;
+package uk.nhs.hee.tis.revalidation.core.mapper;
 
-import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProvider;
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import com.amazonaws.services.cognitoidp.model.UserType;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import uk.nhs.hee.tis.revalidation.core.dto.AdminDto;
 
-@SpringBootTest
-class RevalidationCoreApplicationTest {
+@Mapper(componentModel = "spring")
+public interface AdminMapper {
 
-  @MockBean
-  private AWSCognitoIdentityProvider identityProvider;
-
-  @Test
-  void contextLoads() {
-
-  }
+  // TODO: Change to source from attributes when cognito has that information.
+  @Mapping(target = "fullName", source = "username")
+  AdminDto toDto(UserType userType);
 }
