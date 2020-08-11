@@ -19,21 +19,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package uk.nhs.hee.tis.revalidation.core;
+package uk.nhs.hee.tis.revalidation.core.config;
 
 import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProvider;
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProviderClientBuilder;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-@SpringBootTest
-class RevalidationCoreApplicationTest {
+@Configuration
+public class CognitoConfiguration {
 
-  @MockBean
-  private AWSCognitoIdentityProvider identityProvider;
-
-  @Test
-  void contextLoads() {
-
+  @Bean
+  public AWSCognitoIdentityProvider getAwsIdentityProvider() {
+    return AWSCognitoIdentityProviderClientBuilder.defaultClient();
   }
 }
