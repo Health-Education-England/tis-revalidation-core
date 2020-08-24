@@ -27,6 +27,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProvider;
+import com.amazonaws.services.cognitoidp.model.AttributeType;
 import com.amazonaws.services.cognitoidp.model.ListUsersInGroupResult;
 import com.amazonaws.services.cognitoidp.model.UserType;
 import java.util.Arrays;
@@ -79,6 +80,25 @@ class AdminServiceTest {
     UserType user2 = new UserType();
     user2.setUsername("user2");
 
+    AttributeType attributeType1 = new AttributeType();
+    attributeType1.setName("family_name");
+    attributeType1.setValue("user1");
+
+    AttributeType attributeType2 = new AttributeType();
+    attributeType2.setName("family_name");
+    attributeType2.setValue("user2");
+
+    AttributeType attributeType3 = new AttributeType();
+    attributeType3.setName("given_name");
+    attributeType3.setValue("user1");
+
+    AttributeType attributeType4 = new AttributeType();
+    attributeType4.setName("given_name");
+    attributeType4.setValue("user2");
+
+    user1.setAttributes(Arrays.asList(attributeType1, attributeType3));
+    user2.setAttributes(Arrays.asList(attributeType2, attributeType4));
+
     ListUsersInGroupResult listUsersInGroupResult = new ListUsersInGroupResult();
     listUsersInGroupResult.setUsers(Arrays.asList(user1, user2));
 
@@ -92,10 +112,10 @@ class AdminServiceTest {
 
     AdminDto admin = admins.get(0);
     assertThat("Unexpected username.", admin.getUsername(), is("user1"));
-    assertThat("Unexpected full name.", admin.getFullName(), is("user1"));
+    assertThat("Unexpected full name.", admin.getFullName(), is("user1 user1"));
 
     admin = admins.get(1);
     assertThat("Unexpected username.", admin.getUsername(), is("user2"));
-    assertThat("Unexpected full name.", admin.getFullName(), is("user2"));
+    assertThat("Unexpected full name.", admin.getFullName(), is("user2 user2"));
   }
 }

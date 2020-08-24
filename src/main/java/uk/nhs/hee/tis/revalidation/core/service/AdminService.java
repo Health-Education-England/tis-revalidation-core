@@ -22,8 +22,11 @@
 package uk.nhs.hee.tis.revalidation.core.service;
 
 import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProvider;
+import com.amazonaws.services.cognitoidp.model.AttributeType;
 import com.amazonaws.services.cognitoidp.model.ListUsersInGroupRequest;
 import com.amazonaws.services.cognitoidp.model.ListUsersInGroupResult;
+import com.amazonaws.services.cognitoidp.model.UserType;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Value;
@@ -60,9 +63,32 @@ public class AdminService {
 
     // TODO: A limited number of users can be returned before pagination occurs, handle pagination.
     ListUsersInGroupResult listUsersResult = identityProvider.listUsersInGroup(request);
+    List<UserType> userTypeList = listUsersResult.getUsers();
 
-    return listUsersResult.getUsers().stream()
-        .map(mapper::toDto)
-        .collect(Collectors.toList());
+    return buildAdminDtoList(userTypeList);
+
+  }
+
+  private List<AdminDto> buildAdminDtoList(List<UserType> userTypeList) {
+    return userTypeList.stream().map(userType -> {
+      AdminDto adminDto = new AdminDto();
+      adminDto.setUsername(userType.getUsername());
+      adminDto.setFullName(getUserFullName(userType.getAttributes()));
+      return adminDto;
+    }).collect(Collectors.toList());
+  }
+
+  private String getUserFullName(List<AttributeType> attributeTypeList) {
+    String familyName = "";
+    String givenName = "";
+    for (AttributeType attributeType : attributeTypeList) {
+      if (attributeType.getName().equals("family_name")) {
+        familyName = attributeType.getValue();
+      }
+      if (attributeType.getName().equals("given_name")) {
+        givenName = attributeType.getValue();
+      }
+    }
+    return givenName + " " + familyName;
   }
 }
