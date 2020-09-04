@@ -31,5 +31,6 @@ public interface AdminMapper {
 
   // TODO: Change to source from attributes when cognito has that information.
   @Mapping(target = "fullName", source = "username")
+  @Mapping(target = "email", source="username")
   AdminDto toDto(UserType userType);
 }

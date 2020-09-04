@@ -71,9 +71,11 @@ public class AdminService {
 
   private List<AdminDto> buildAdminDtoList(List<UserType> userTypeList) {
     return userTypeList.stream().map(userType -> {
+      List<AttributeType> userAttributes = userType.getAttributes();
       AdminDto adminDto = new AdminDto();
       adminDto.setUsername(userType.getUsername());
-      adminDto.setFullName(getUserFullName(userType.getAttributes()));
+      adminDto.setFullName(getUserFullName(userAttributes));
+      adminDto.setEmail(getUserEmail(userAttributes));
       return adminDto;
     }).collect(Collectors.toList());
   }
@@ -90,5 +92,11 @@ public class AdminService {
       }
     }
     return givenName + " " + familyName;
+  }
+
+  private String getUserEmail(List<AttributeType> attributeTypeList) {
+    AttributeType emailAttributeType = attributeTypeList.stream().filter(attributeType -> attributeType.getName().equals("email")).findFirst().orElse(null);
+
+    return emailAttributeType != null ? emailAttributeType.getValue() : "";
   }
 }
