@@ -30,17 +30,19 @@ import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProvider;
 import com.amazonaws.services.cognitoidp.model.AttributeType;
 import com.amazonaws.services.cognitoidp.model.ListUsersInGroupResult;
 import com.amazonaws.services.cognitoidp.model.UserType;
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mapstruct.factory.Mappers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.util.ReflectionUtils;
 import uk.nhs.hee.tis.revalidation.core.dto.AdminDto;
-import uk.nhs.hee.tis.revalidation.core.mapper.AdminMapper;
+import uk.nhs.hee.tis.revalidation.core.mapper.AdminMapperImpl;
+import uk.nhs.hee.tis.revalidation.core.mapper.util.AdminUtil;
 
 @ExtendWith(MockitoExtension.class)
 class AdminServiceTest {
@@ -52,7 +54,11 @@ class AdminServiceTest {
 
   @BeforeEach
   void setUp() {
-    AdminMapper mapper = Mappers.getMapper(AdminMapper.class);
+    AdminMapperImpl mapper = new AdminMapperImpl();
+    Field field = ReflectionUtils.findField(AdminMapperImpl.class, "adminUtil");
+    field.setAccessible(true);
+    ReflectionUtils.setField(field, mapper, new AdminUtil());
+
     service = new AdminService(identityProvider, mapper);
   }
 

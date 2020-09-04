@@ -22,13 +22,10 @@
 package uk.nhs.hee.tis.revalidation.core.service;
 
 import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProvider;
-import com.amazonaws.services.cognitoidp.model.AttributeType;
 import com.amazonaws.services.cognitoidp.model.ListUsersInGroupRequest;
 import com.amazonaws.services.cognitoidp.model.ListUsersInGroupResult;
 import com.amazonaws.services.cognitoidp.model.UserType;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.nhs.hee.tis.revalidation.core.dto.AdminDto;
@@ -65,38 +62,6 @@ public class AdminService {
     ListUsersInGroupResult listUsersResult = identityProvider.listUsersInGroup(request);
     List<UserType> userTypeList = listUsersResult.getUsers();
 
-    return buildAdminDtoList(userTypeList);
-
-  }
-
-  private List<AdminDto> buildAdminDtoList(List<UserType> userTypeList) {
-    return userTypeList.stream().map(userType -> {
-      List<AttributeType> userAttributes = userType.getAttributes();
-      AdminDto adminDto = new AdminDto();
-      adminDto.setUsername(userType.getUsername());
-      adminDto.setFullName(getUserFullName(userAttributes));
-      adminDto.setEmail(getUserEmail(userAttributes));
-      return adminDto;
-    }).collect(Collectors.toList());
-  }
-
-  private String getUserFullName(List<AttributeType> attributeTypeList) {
-    String familyName = "";
-    String givenName = "";
-    for (AttributeType attributeType : attributeTypeList) {
-      if (attributeType.getName().equals("family_name")) {
-        familyName = attributeType.getValue();
-      }
-      if (attributeType.getName().equals("given_name")) {
-        givenName = attributeType.getValue();
-      }
-    }
-    return givenName + " " + familyName;
-  }
-
-  private String getUserEmail(List<AttributeType> attributeTypeList) {
-    AttributeType emailAttributeType = attributeTypeList.stream().filter(attributeType -> attributeType.getName().equals("email")).findFirst().orElse(null);
-
-    return emailAttributeType != null ? emailAttributeType.getValue() : "";
+    return mapper.toDtos(userTypeList);
   }
 }

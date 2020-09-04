@@ -22,15 +22,20 @@
 package uk.nhs.hee.tis.revalidation.core.mapper;
 
 import com.amazonaws.services.cognitoidp.model.UserType;
+import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import uk.nhs.hee.tis.revalidation.core.dto.AdminDto;
+import uk.nhs.hee.tis.revalidation.core.mapper.util.AdminUtil;
+import uk.nhs.hee.tis.revalidation.core.mapper.util.AdminUtil.Email;
+import uk.nhs.hee.tis.revalidation.core.mapper.util.AdminUtil.FullName;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = AdminUtil.class)
 public interface AdminMapper {
 
-  // TODO: Change to source from attributes when cognito has that information.
-  @Mapping(target = "fullName", source = "username")
-  @Mapping(target = "email", source="username")
+  @Mapping(target = "fullName", source = "attributes", qualifiedBy = FullName.class)
+  @Mapping(target = "email", source = "attributes", qualifiedBy = Email.class)
   AdminDto toDto(UserType userType);
+
+  List<AdminDto> toDtos(List<UserType> userTypes);
 }
