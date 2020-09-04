@@ -67,10 +67,12 @@ class AdminControllerTest {
     AdminDto admin1 = new AdminDto();
     admin1.setUsername("admin1");
     admin1.setFullName("Admin One");
+    admin1.setEmail("admin1@email.com");
 
     AdminDto admin2 = new AdminDto();
     admin2.setUsername("admin2");
     admin2.setFullName("Admin Two");
+    admin2.setEmail("admin2@email.com");
 
     when(service.getAssignableAdmins()).thenReturn(Arrays.asList(admin1, admin2));
 
@@ -78,7 +80,9 @@ class AdminControllerTest {
         .andExpect(status().isOk())
         .andExpect(jsonPath("$[0].username").value("admin1"))
         .andExpect(jsonPath("$[0].fullName").value("Admin One"))
+        .andExpect(jsonPath("$[0].email").value("admin1@email.com"))
         .andExpect(jsonPath("$[1].username").value("admin2"))
-        .andExpect(jsonPath("$[1].fullName").value("Admin Two"));
+        .andExpect(jsonPath("$[1].fullName").value("Admin Two"))
+        .andExpect(jsonPath("$[1].email").value("admin2@email.com"));
   }
 }

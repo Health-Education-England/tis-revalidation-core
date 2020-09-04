@@ -26,7 +26,7 @@ logging:
     org.springframework.boot.autoconfigure: ${LOGGING_LEVEL:ERROR}
 
   file:
-    name: ${LOG_DIR:${HOME}}/revalidation-core.log
+    name: ${LOG_DIR:${HOME:}}/revalidation-core.log
 
 management:
   endpoints:

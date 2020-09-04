@@ -30,17 +30,19 @@ import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProvider;
 import com.amazonaws.services.cognitoidp.model.AttributeType;
 import com.amazonaws.services.cognitoidp.model.ListUsersInGroupResult;
 import com.amazonaws.services.cognitoidp.model.UserType;
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mapstruct.factory.Mappers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.util.ReflectionUtils;
 import uk.nhs.hee.tis.revalidation.core.dto.AdminDto;
-import uk.nhs.hee.tis.revalidation.core.mapper.AdminMapper;
+import uk.nhs.hee.tis.revalidation.core.mapper.AdminMapperImpl;
+import uk.nhs.hee.tis.revalidation.core.mapper.util.AdminUtil;
 
 @ExtendWith(MockitoExtension.class)
 class AdminServiceTest {
@@ -52,7 +54,11 @@ class AdminServiceTest {
 
   @BeforeEach
   void setUp() {
-    AdminMapper mapper = Mappers.getMapper(AdminMapper.class);
+    AdminMapperImpl mapper = new AdminMapperImpl();
+    Field field = ReflectionUtils.findField(AdminMapperImpl.class, "adminUtil");
+    field.setAccessible(true);
+    ReflectionUtils.setField(field, mapper, new AdminUtil());
+
     service = new AdminService(identityProvider, mapper);
   }
 
@@ -96,8 +102,16 @@ class AdminServiceTest {
     attributeType4.setName("given_name");
     attributeType4.setValue("user2");
 
-    user1.setAttributes(Arrays.asList(attributeType1, attributeType3));
-    user2.setAttributes(Arrays.asList(attributeType2, attributeType4));
+    AttributeType attributeType5 = new AttributeType();
+    attributeType5.setName("email");
+    attributeType5.setValue("user1@email.com");
+
+    AttributeType attributeType6 = new AttributeType();
+    attributeType6.setName("email");
+    attributeType6.setValue("user2@email.com");
+
+    user1.setAttributes(Arrays.asList(attributeType1, attributeType3, attributeType5));
+    user2.setAttributes(Arrays.asList(attributeType2, attributeType4, attributeType6));
 
     ListUsersInGroupResult listUsersInGroupResult = new ListUsersInGroupResult();
     listUsersInGroupResult.setUsers(Arrays.asList(user1, user2));
@@ -113,9 +127,11 @@ class AdminServiceTest {
     AdminDto admin = admins.get(0);
     assertThat("Unexpected username.", admin.getUsername(), is("user1"));
     assertThat("Unexpected full name.", admin.getFullName(), is("user1 user1"));
+    assertThat("Unexpected email.", admin.getEmail(), is("user1@email.com"));
 
     admin = admins.get(1);
     assertThat("Unexpected username.", admin.getUsername(), is("user2"));
     assertThat("Unexpected full name.", admin.getFullName(), is("user2 user2"));
+    assertThat("Unexpected email.", admin.getEmail(), is("user2@email.com"));
   }
 }
