@@ -44,6 +44,9 @@ app:
     admin-group: ${ADMIN_GROUP:}
     admin-user-pool: ${ADMIN_USER_POOL:}
 
+  environment:
+    name: ${SENTRY_ENVIRONMENT:local}
+
   error:
     exchange: "ex.error"
     limit.retries: true
