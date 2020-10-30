@@ -65,3 +65,7 @@ app:
     exchange: ${EXCHANGE:gmc-connect-exchange}
     queue: ${QUEUE:gmc-doctors-queue}
     routingKey: ${ROUTING_KEY:uk.nhs.hee}
+
+sentry:
+  dsn: ${SENTRY_DSN:}
+  environment: ${SENTRY_ENVIRONMENT:}
