@@ -39,25 +39,30 @@ import uk.nhs.hee.tis.revalidation.core.dto.TraineeCoreDto;
 import uk.nhs.hee.tis.revalidation.core.dto.TraineeInfoDto;
 import uk.nhs.hee.tis.revalidation.core.dto.TraineeRequestDto;
 import uk.nhs.hee.tis.revalidation.core.dto.TraineeSummaryDto;
-import uk.nhs.hee.tis.revalidation.core.entity.DoctorsForDB;
-import uk.nhs.hee.tis.revalidation.core.repository.DoctorsForDBRepository;
+import uk.nhs.hee.tis.revalidation.core.entity.DoctorsForDb;
+import uk.nhs.hee.tis.revalidation.core.repository.DoctorsForDbRepository;
 
 @Transactional
 @Service
-public class DoctorsForDBService {
+public class DoctorsForDbService {
 
 
   @Value("${app.reval.pagination.pageSize}")
   private int pageSize;
 
   @Autowired
-  private DoctorsForDBRepository doctorsRepository;
+  private DoctorsForDbRepository doctorsRepository;
 
   @Autowired
   private TraineeCoreService traineeCoreService;
 
-  public TraineeSummaryDto getAllTraineeDoctorDetails(final TraineeRequestDto requestDTO) {
-    final var paginatedDoctors = getSortedAndFilteredDoctorsByPageNumber(requestDTO);
+  /**
+   * Get trainee doctors details.
+   *
+   * @param requestDto sort, page and search request for run
+   */
+  public TraineeSummaryDto getAllTraineeDoctorDetails(final TraineeRequestDto requestDto) {
+    final var paginatedDoctors = getSortedAndFilteredDoctorsByPageNumber(requestDto);
     final var doctorsList = paginatedDoctors.get().collect(toList());
     final var gmcIds =
         doctorsList.stream().map(doc -> doc.getGmcReferenceNumber()).collect(toList());
@@ -75,46 +80,46 @@ public class DoctorsForDBService {
   }
 
   public void updateTrainee(final DoctorsForDbDto gmcDoctor) {
-    final DoctorsForDB doctorsForDB = DoctorsForDB.convert(gmcDoctor);
-    doctorsRepository.save(doctorsForDB);
+    final DoctorsForDb doctorsForDb = DoctorsForDb.convert(gmcDoctor);
+    doctorsRepository.save(doctorsForDb);
   }
 
-  private TraineeInfoDto convert(final DoctorsForDB doctorsForDB,
-      final TraineeCoreDto traineeCoreDTO) {
-    final var traineeInfoDTOBuilder = TraineeInfoDto.builder()
-        .gmcReferenceNumber(doctorsForDB.getGmcReferenceNumber())
-        .doctorFirstName(doctorsForDB.getDoctorFirstName())
-        .doctorLastName(doctorsForDB.getDoctorLastName())
-        .submissionDate(doctorsForDB.getSubmissionDate())
-        .dateAdded(doctorsForDB.getDateAdded())
-        .underNotice(doctorsForDB.getUnderNotice().name())
-        .sanction(doctorsForDB.getSanction())
-        .doctorStatus(doctorsForDB.getDoctorStatus().name()) //TODO update with legacy statuses
-        .lastUpdatedDate(doctorsForDB.getLastUpdatedDate());
+  private TraineeInfoDto convert(final DoctorsForDb doctorsForDb,
+      final TraineeCoreDto traineeCoreDto) {
+    final var traineeInfoDtoBuilder = TraineeInfoDto.builder()
+        .gmcReferenceNumber(doctorsForDb.getGmcReferenceNumber())
+        .doctorFirstName(doctorsForDb.getDoctorFirstName())
+        .doctorLastName(doctorsForDb.getDoctorLastName())
+        .submissionDate(doctorsForDb.getSubmissionDate())
+        .dateAdded(doctorsForDb.getDateAdded())
+        .underNotice(doctorsForDb.getUnderNotice().name())
+        .sanction(doctorsForDb.getSanction())
+        .doctorStatus(doctorsForDb.getDoctorStatus().name()) //TODO update with legacy statuses
+        .lastUpdatedDate(doctorsForDb.getLastUpdatedDate());
 
-    if (traineeCoreDTO != null) {
-      traineeInfoDTOBuilder
-          .cctDate(traineeCoreDTO.getCctDate())
-          .programmeName(traineeCoreDTO.getProgrammeName())
-          .programmeMembershipType(traineeCoreDTO.getProgrammeMembershipType())
-          .currentGrade(traineeCoreDTO.getCurrentGrade());
+    if (traineeCoreDto != null) {
+      traineeInfoDtoBuilder
+          .cctDate(traineeCoreDto.getCctDate())
+          .programmeName(traineeCoreDto.getProgrammeName())
+          .programmeMembershipType(traineeCoreDto.getProgrammeMembershipType())
+          .currentGrade(traineeCoreDto.getCurrentGrade());
     }
 
-    return traineeInfoDTOBuilder.build();
+    return traineeInfoDtoBuilder.build();
 
   }
 
-  private Page<DoctorsForDB> getSortedAndFilteredDoctorsByPageNumber(
-      final TraineeRequestDto requestDTO) {
-    final var direction = "asc".equalsIgnoreCase(requestDTO.getSortOrder()) ? ASC : DESC;
+  private Page<DoctorsForDb> getSortedAndFilteredDoctorsByPageNumber(
+      final TraineeRequestDto requestDto) {
+    final var direction = "asc".equalsIgnoreCase(requestDto.getSortOrder()) ? ASC : DESC;
     final var pageableAndSortable =
-        of(requestDTO.getPageNumber(), pageSize, by(direction, requestDTO.getSortColumn()));
-    if (requestDTO.isUnderNotice()) {
+        of(requestDto.getPageNumber(), pageSize, by(direction, requestDto.getSortColumn()));
+    if (requestDto.isUnderNotice()) {
       return doctorsRepository
-          .findAllByUnderNoticeIn(pageableAndSortable, requestDTO.getSearchQuery(), YES, ON_HOLD);
+          .findAllByUnderNoticeIn(pageableAndSortable, requestDto.getSearchQuery(), YES, ON_HOLD);
     }
 
-    return doctorsRepository.findAll(pageableAndSortable, requestDTO.getSearchQuery());
+    return doctorsRepository.findAll(pageableAndSortable, requestDto.getSearchQuery());
   }
 
   //TODO: explore to implement cache

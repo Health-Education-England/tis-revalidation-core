@@ -59,12 +59,18 @@ public class TraineeCoreServiceTest {
   @Mock
   private ResponseEntity responseEntity;
 
-  private String gmcId1, gmcId2;
-  private LocalDate cctDate1, cctDate2;
-  private String programmeMembershipType1, programmeMembershipType2;
-  private String programmeName1, programmeName2;
-  private String currentGrade1, currentGrade2;
-  private TraineeCoreDto trainee1, trainee2;
+  private String gmcId1;
+  private String gmcId2;
+  private LocalDate cctDate1;
+  private LocalDate cctDate2;
+  private String programmeMembershipType1;
+  private String programmeMembershipType2;
+  private String programmeName1;
+  private String programmeName2;
+  private String currentGrade1;
+  private String currentGrade2;
+  private TraineeCoreDto trainee1;
+  private TraineeCoreDto trainee2;
 
   @Before
   public void setup() {
@@ -83,13 +89,13 @@ public class TraineeCoreServiceTest {
         traineeCoreService.getTraineeInformationFromCore(of(gmcId1));
     assertThat(traineeInformationFromCore.size(), is(1));
 
-    final var traineeCoreDTO = traineeInformationFromCore.get(gmcId1);
-    assertThat(traineeCoreDTO, is(notNullValue()));
-    assertThat(traineeCoreDTO.getGmcId(), is(gmcId1));
-    assertThat(traineeCoreDTO.getCctDate(), is(cctDate1));
-    assertThat(traineeCoreDTO.getCurrentGrade(), is(currentGrade1));
-    assertThat(traineeCoreDTO.getProgrammeMembershipType(), is(programmeMembershipType1));
-    assertThat(traineeCoreDTO.getProgrammeName(), is(programmeName1));
+    final var traineeCoreDto = traineeInformationFromCore.get(gmcId1);
+    assertThat(traineeCoreDto, is(notNullValue()));
+    assertThat(traineeCoreDto.getGmcId(), is(gmcId1));
+    assertThat(traineeCoreDto.getCctDate(), is(cctDate1));
+    assertThat(traineeCoreDto.getCurrentGrade(), is(currentGrade1));
+    assertThat(traineeCoreDto.getProgrammeMembershipType(), is(programmeMembershipType1));
+    assertThat(traineeCoreDto.getProgrammeName(), is(programmeName1));
   }
 
   @Test
@@ -103,21 +109,21 @@ public class TraineeCoreServiceTest {
         traineeCoreService.getTraineeInformationFromCore(of(gmcId1, gmcId2));
     assertThat(traineeInformationFromCore.size(), is(2));
 
-    var traineeCoreDTO = traineeInformationFromCore.get(gmcId1);
-    assertThat(traineeCoreDTO, is(notNullValue()));
-    assertThat(traineeCoreDTO.getGmcId(), is(gmcId1));
-    assertThat(traineeCoreDTO.getCctDate(), is(cctDate1));
-    assertThat(traineeCoreDTO.getCurrentGrade(), is(currentGrade1));
-    assertThat(traineeCoreDTO.getProgrammeMembershipType(), is(programmeMembershipType1));
-    assertThat(traineeCoreDTO.getProgrammeName(), is(programmeName1));
+    var traineeCoreDto = traineeInformationFromCore.get(gmcId1);
+    assertThat(traineeCoreDto, is(notNullValue()));
+    assertThat(traineeCoreDto.getGmcId(), is(gmcId1));
+    assertThat(traineeCoreDto.getCctDate(), is(cctDate1));
+    assertThat(traineeCoreDto.getCurrentGrade(), is(currentGrade1));
+    assertThat(traineeCoreDto.getProgrammeMembershipType(), is(programmeMembershipType1));
+    assertThat(traineeCoreDto.getProgrammeName(), is(programmeName1));
 
-    traineeCoreDTO = traineeInformationFromCore.get(gmcId2);
-    assertThat(traineeCoreDTO, is(notNullValue()));
-    assertThat(traineeCoreDTO.getGmcId(), is(gmcId2));
-    assertThat(traineeCoreDTO.getCctDate(), is(cctDate2));
-    assertThat(traineeCoreDTO.getCurrentGrade(), is(currentGrade2));
-    assertThat(traineeCoreDTO.getProgrammeMembershipType(), is(programmeMembershipType2));
-    assertThat(traineeCoreDTO.getProgrammeName(), is(programmeName2));
+    traineeCoreDto = traineeInformationFromCore.get(gmcId2);
+    assertThat(traineeCoreDto, is(notNullValue()));
+    assertThat(traineeCoreDto.getGmcId(), is(gmcId2));
+    assertThat(traineeCoreDto.getCctDate(), is(cctDate2));
+    assertThat(traineeCoreDto.getCurrentGrade(), is(currentGrade2));
+    assertThat(traineeCoreDto.getProgrammeMembershipType(), is(programmeMembershipType2));
+    assertThat(traineeCoreDto.getProgrammeName(), is(programmeName2));
   }
 
   @Test
