@@ -28,26 +28,27 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
-import uk.nhs.hee.tis.revalidation.core.entity.DoctorsForDB;
+import uk.nhs.hee.tis.revalidation.core.entity.DoctorsForDb;
 import uk.nhs.hee.tis.revalidation.core.entity.UnderNotice;
 
 @Repository
-public interface DoctorsForDBRepository extends MongoRepository<DoctorsForDB, String> {
+public interface DoctorsForDbRepository extends MongoRepository<DoctorsForDb, String> {
 
   //Get count for trainee doctors who are underNotice
   long countByUnderNoticeIn(final UnderNotice... underNotice);
 
   //Get trainee doctors as part of search results (search by first name or last name or gmc number).
   //TODO: look at the query option too
-  Page<DoctorsForDB> findByDoctorFirstNameIgnoreCaseLikeOrDoctorLastNameIgnoreCaseLikeOrGmcReferenceNumberIgnoreCaseLike(
+  Page<DoctorsForDb> findByDoctorFirstNameIgnoreCaseLikeOrDoctorLastNameIgnoreCaseLikeOrGmcReferenceNumberIgnoreCaseLike(
       final Pageable pageable,
       final String firstName,
       final String lastName,
       final String gmcNumber);
 
-  //Get under notice trainee doctors as part of search results (search by first name or last name or gmc number).
+  //Get under notice trainee doctors as part of search results
+  // (search by first name or last name or gmc number).
   //TODO: look at the query option too
-  Page<DoctorsForDB> findByDoctorFirstNameIgnoreCaseLikeAndUnderNoticeInOrDoctorLastNameIgnoreCaseLikeAndUnderNoticeInOrGmcReferenceNumberIgnoreCaseLikeAndUnderNoticeIn(
+  Page<DoctorsForDb> findByDoctorFirstNameIgnoreCaseLikeAndUnderNoticeInOrDoctorLastNameIgnoreCaseLikeAndUnderNoticeInOrGmcReferenceNumberIgnoreCaseLikeAndUnderNoticeIn(
       final Pageable pageable,
       final String firstName,
       final List<UnderNotice> un1,
@@ -56,9 +57,13 @@ public interface DoctorsForDBRepository extends MongoRepository<DoctorsForDB, St
       final String gmcNumber,
       final List<UnderNotice> un3);
 
-
-  //A wrapper search method of doctors to make it easy for use.
-  default Page<DoctorsForDB> findAll(final Pageable pageable, final String searchQuery) {
+  /**
+   * A wrapper search method of doctors to make it easy for use.
+   *
+   * @param pageable pagination information
+   * @param searchQuery query to run
+   */
+  default Page<DoctorsForDb> findAll(final Pageable pageable, final String searchQuery) {
     return findByDoctorFirstNameIgnoreCaseLikeOrDoctorLastNameIgnoreCaseLikeOrGmcReferenceNumberIgnoreCaseLike(
         pageable,
         searchQuery,
@@ -66,8 +71,14 @@ public interface DoctorsForDBRepository extends MongoRepository<DoctorsForDB, St
         searchQuery);
   }
 
-  //A wrapper search method of under notice doctors to make it easy for use.
-  default Page<DoctorsForDB> findAllByUnderNoticeIn(final Pageable pageable,
+  /**
+   * A wrapper search method of under notice doctors to make it easy for use.
+   *
+   * @param pageable pagination information
+   * @param searchQuery query to run
+   * @param underNotice for filtering information
+   */
+  default Page<DoctorsForDb> findAllByUnderNoticeIn(final Pageable pageable,
       final String searchQuery, final UnderNotice... underNotice) {
     return findByDoctorFirstNameIgnoreCaseLikeAndUnderNoticeInOrDoctorLastNameIgnoreCaseLikeAndUnderNoticeInOrGmcReferenceNumberIgnoreCaseLikeAndUnderNoticeIn(
         pageable,

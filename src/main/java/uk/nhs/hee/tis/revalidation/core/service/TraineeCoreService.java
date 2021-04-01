@@ -52,9 +52,9 @@ public class TraineeCoreService {
       final var gmcId = gmcIds.stream().collect(joining(","));
       final var requestUrl = format("%s/%s", tcsUrl, gmcId);
       log.debug("Tcs url to fetch core information: {}", requestUrl);
-      Map<String, TraineeCoreDto> traineeCoreDTOS = Map.of();
+      Map<String, TraineeCoreDto> traineeCoreDtos = Map.of();
       try {
-        traineeCoreDTOS = restTemplate
+        traineeCoreDtos = restTemplate
             .exchange(requestUrl, GET, null,
                 new ParameterizedTypeReference<Map<String, TraineeCoreDto>>() {
                 }).getBody();
@@ -66,7 +66,7 @@ public class TraineeCoreService {
         log.error("Fail to connect to TCS service", e);
       }
 
-      return traineeCoreDTOS;
+      return traineeCoreDtos;
     }
 
     return Map.of();

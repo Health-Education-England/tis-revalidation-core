@@ -34,13 +34,16 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import uk.nhs.hee.tis.revalidation.core.dto.DoctorsForDbDto;
 
+/**
+ * Entity for doctors information from GMC.
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Document(collection = "doctorsForDB")
+@Document(collection = "doctorsForDb")
 @ApiModel(description = "Trainee doctors's core profile data")
-public class DoctorsForDB {
+public class DoctorsForDb {
 
   @Id
   private String gmcReferenceNumber;
@@ -54,17 +57,22 @@ public class DoctorsForDB {
   private LocalDate lastUpdatedDate;
   private String designatedBodyCode;
 
-  public final static DoctorsForDB convert(final DoctorsForDbDto doctorsForDBDTO) {
-    return DoctorsForDB.builder()
-        .gmcReferenceNumber(doctorsForDBDTO.getGmcReferenceNumber())
-        .doctorFirstName(doctorsForDBDTO.getDoctorFirstName())
-        .doctorLastName(doctorsForDBDTO.getDoctorLastName())
-        .submissionDate(doctorsForDBDTO.getSubmissionDate())
-        .dateAdded(doctorsForDBDTO.getDateAdded())
-        .underNotice(UnderNotice.fromString(doctorsForDBDTO.getUnderNotice()))
-        .sanction(doctorsForDBDTO.getSanction())
+  /**
+   * Convert doctorsForDB DTO to entity.
+   *
+   * @param doctorsForDbDto dto to be converted
+   */
+  public static final DoctorsForDb convert(final DoctorsForDbDto doctorsForDbDto) {
+    return DoctorsForDb.builder()
+        .gmcReferenceNumber(doctorsForDbDto.getGmcReferenceNumber())
+        .doctorFirstName(doctorsForDbDto.getDoctorFirstName())
+        .doctorLastName(doctorsForDbDto.getDoctorLastName())
+        .submissionDate(doctorsForDbDto.getSubmissionDate())
+        .dateAdded(doctorsForDbDto.getDateAdded())
+        .underNotice(UnderNotice.fromString(doctorsForDbDto.getUnderNotice()))
+        .sanction(doctorsForDbDto.getSanction())
         .doctorStatus(NOT_STARTED)
-        .designatedBodyCode(doctorsForDBDTO.getDesignatedBodyCode())
+        .designatedBodyCode(doctorsForDbDto.getDesignatedBodyCode())
         .lastUpdatedDate(now())
         .build();
   }

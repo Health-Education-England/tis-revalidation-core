@@ -27,17 +27,17 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static uk.nhs.hee.tis.revalidation.core.controller.DoctorsForDBController.ASC;
-import static uk.nhs.hee.tis.revalidation.core.controller.DoctorsForDBController.DESC;
-import static uk.nhs.hee.tis.revalidation.core.controller.DoctorsForDBController.EMPTY_STRING;
-import static uk.nhs.hee.tis.revalidation.core.controller.DoctorsForDBController.PAGE_NUMBER;
-import static uk.nhs.hee.tis.revalidation.core.controller.DoctorsForDBController.PAGE_NUMBER_VALUE;
-import static uk.nhs.hee.tis.revalidation.core.controller.DoctorsForDBController.SEARCH_QUERY;
-import static uk.nhs.hee.tis.revalidation.core.controller.DoctorsForDBController.SORT_COLUMN;
-import static uk.nhs.hee.tis.revalidation.core.controller.DoctorsForDBController.SORT_ORDER;
-import static uk.nhs.hee.tis.revalidation.core.controller.DoctorsForDBController.SUBMISSION_DATE;
-import static uk.nhs.hee.tis.revalidation.core.controller.DoctorsForDBController.UNDER_NOTICE;
-import static uk.nhs.hee.tis.revalidation.core.controller.DoctorsForDBController.UNDER_NOTICE_VALUE;
+import static uk.nhs.hee.tis.revalidation.core.controller.DoctorsForDbController.ASC;
+import static uk.nhs.hee.tis.revalidation.core.controller.DoctorsForDbController.DESC;
+import static uk.nhs.hee.tis.revalidation.core.controller.DoctorsForDbController.EMPTY_STRING;
+import static uk.nhs.hee.tis.revalidation.core.controller.DoctorsForDbController.PAGE_NUMBER;
+import static uk.nhs.hee.tis.revalidation.core.controller.DoctorsForDbController.PAGE_NUMBER_VALUE;
+import static uk.nhs.hee.tis.revalidation.core.controller.DoctorsForDbController.SEARCH_QUERY;
+import static uk.nhs.hee.tis.revalidation.core.controller.DoctorsForDbController.SORT_COLUMN;
+import static uk.nhs.hee.tis.revalidation.core.controller.DoctorsForDbController.SORT_ORDER;
+import static uk.nhs.hee.tis.revalidation.core.controller.DoctorsForDbController.SUBMISSION_DATE;
+import static uk.nhs.hee.tis.revalidation.core.controller.DoctorsForDbController.UNDER_NOTICE;
+import static uk.nhs.hee.tis.revalidation.core.controller.DoctorsForDbController.UNDER_NOTICE_VALUE;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javafaker.Faker;
@@ -56,11 +56,11 @@ import uk.nhs.hee.tis.revalidation.core.dto.TraineeRequestDto;
 import uk.nhs.hee.tis.revalidation.core.dto.TraineeSummaryDto;
 import uk.nhs.hee.tis.revalidation.core.entity.RecommendationStatus;
 import uk.nhs.hee.tis.revalidation.core.entity.UnderNotice;
-import uk.nhs.hee.tis.revalidation.core.service.DoctorsForDBService;
+import uk.nhs.hee.tis.revalidation.core.service.DoctorsForDbService;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(DoctorsForDBController.class)
-public class DoctorsForDBControllerTest {
+@WebMvcTest(DoctorsForDbController.class)
+public class DoctorsForDbControllerTest {
 
   private static final String DOCTORS_API_URL = "/api/doctors";
   private final Faker faker = new Faker();
@@ -72,17 +72,28 @@ public class DoctorsForDBControllerTest {
   private ObjectMapper mapper;
 
   @MockBean
-  private DoctorsForDBService doctorsForDBService;
+  private DoctorsForDbService doctorsForDbService;
 
-  private String gmcRef1, gmcRef2;
-  private String firstName1, firstName2;
-  private String lastName1, lastName2;
-  private LocalDate submissionDate1, submissionDate2;
-  private LocalDate dateAdded1, dateAdded2;
-  private UnderNotice underNotice1, underNotice2;
-  private String sanction1, sanction2;
-  private RecommendationStatus doctorStatus1, doctorStatus2;
+  private String gmcRef1;
+  private String gmcRef2;
+  private String firstName1;
+  private String firstName2;
+  private String lastName1;
+  private String lastName2;
+  private LocalDate submissionDate1;
+  private LocalDate submissionDate2;
+  private LocalDate dateAdded1;
+  private LocalDate dateAdded2;
+  private UnderNotice underNotice1;
+  private UnderNotice underNotice2;
+  private String sanction1;
+  private String sanction2;
+  private RecommendationStatus doctorStatus1;
+  private RecommendationStatus doctorStatus2;
 
+  /**
+   * Set up data for testing.
+   */
   @Before
   public void setup() {
     gmcRef1 = faker.number().digits(8);
@@ -105,10 +116,10 @@ public class DoctorsForDBControllerTest {
 
   @Test
   public void shouldReturnTraineeDoctorsInformation() throws Exception {
-    final var gmcDoctorDTO = prepareGmcDoctor();
-    final var requestDTO = TraineeRequestDto.builder().sortOrder(ASC).sortColumn(SUBMISSION_DATE)
+    final var gmcDoctorDto = prepareGmcDoctor();
+    final var requestDto = TraineeRequestDto.builder().sortOrder(ASC).sortColumn(SUBMISSION_DATE)
         .searchQuery(EMPTY_STRING).build();
-    when(doctorsForDBService.getAllTraineeDoctorDetails(requestDTO)).thenReturn(gmcDoctorDTO);
+    when(doctorsForDbService.getAllTraineeDoctorDetails(requestDto)).thenReturn(gmcDoctorDto);
     this.mockMvc.perform(get(DOCTORS_API_URL)
         .param(SORT_ORDER, ASC)
         .param(SORT_COLUMN, SUBMISSION_DATE)
@@ -116,60 +127,60 @@ public class DoctorsForDBControllerTest {
         .param(PAGE_NUMBER, PAGE_NUMBER_VALUE)
         .param(SEARCH_QUERY, EMPTY_STRING))
         .andExpect(status().isOk())
-        .andExpect(content().json(mapper.writeValueAsString(gmcDoctorDTO)));
+        .andExpect(content().json(mapper.writeValueAsString(gmcDoctorDto)));
   }
 
   @Test
   public void shouldReturnDataWhenSortOrderAndSortColumnAreEmpty() throws Exception {
-    final var gmcDoctorDTO = prepareGmcDoctor();
-    final var requestDTO = TraineeRequestDto.builder().sortOrder(DESC).sortColumn(SUBMISSION_DATE)
+    final var gmcDoctorDto = prepareGmcDoctor();
+    final var requestDto = TraineeRequestDto.builder().sortOrder(DESC).sortColumn(SUBMISSION_DATE)
         .searchQuery(EMPTY_STRING).build();
-    when(doctorsForDBService.getAllTraineeDoctorDetails(requestDTO)).thenReturn(gmcDoctorDTO);
+    when(doctorsForDbService.getAllTraineeDoctorDetails(requestDto)).thenReturn(gmcDoctorDto);
     this.mockMvc.perform(get(DOCTORS_API_URL)
         .param(SORT_ORDER, "")
         .param(SORT_COLUMN, ""))
         .andExpect(status().isOk())
-        .andExpect(content().json(mapper.writeValueAsString(gmcDoctorDTO)));
+        .andExpect(content().json(mapper.writeValueAsString(gmcDoctorDto)));
   }
 
   @Test
   public void shouldReturnDataWhenSortOrderAndSortColumnAreInvalid() throws Exception {
-    final var gmcDoctorDTO = prepareGmcDoctor();
-    final var requestDTO = TraineeRequestDto.builder().sortOrder(DESC).sortColumn(SUBMISSION_DATE)
+    final var gmcDoctorDto = prepareGmcDoctor();
+    final var requestDto = TraineeRequestDto.builder().sortOrder(DESC).sortColumn(SUBMISSION_DATE)
         .searchQuery(EMPTY_STRING).build();
-    when(doctorsForDBService.getAllTraineeDoctorDetails(requestDTO)).thenReturn(gmcDoctorDTO);
+    when(doctorsForDbService.getAllTraineeDoctorDetails(requestDto)).thenReturn(gmcDoctorDto);
     this.mockMvc.perform(get(DOCTORS_API_URL)
         .param(SORT_ORDER, "aa")
         .param(SORT_COLUMN, "date"))
         .andExpect(status().isOk())
-        .andExpect(content().json(mapper.writeValueAsString(gmcDoctorDTO)));
+        .andExpect(content().json(mapper.writeValueAsString(gmcDoctorDto)));
   }
 
   @Test
   public void shouldReturnUnderNoticeTraineeDoctorsInformation() throws Exception {
-    final var gmcDoctorDTO = prepareGmcDoctor();
-    final var requestDTO = TraineeRequestDto.builder()
+    final var gmcDoctorDto = prepareGmcDoctor();
+    final var requestDto = TraineeRequestDto.builder()
         .sortOrder(ASC).sortColumn(SUBMISSION_DATE).underNotice(true).searchQuery(EMPTY_STRING)
         .build();
-    when(doctorsForDBService.getAllTraineeDoctorDetails(requestDTO)).thenReturn(gmcDoctorDTO);
+    when(doctorsForDbService.getAllTraineeDoctorDetails(requestDto)).thenReturn(gmcDoctorDto);
     this.mockMvc.perform(get(DOCTORS_API_URL)
         .param(SORT_ORDER, ASC)
         .param(SORT_COLUMN, SUBMISSION_DATE)
         .param(UNDER_NOTICE, String.valueOf(true)))
         .andExpect(status().isOk())
-        .andExpect(content().json(mapper.writeValueAsString(gmcDoctorDTO)));
+        .andExpect(content().json(mapper.writeValueAsString(gmcDoctorDto)));
   }
 
   private TraineeSummaryDto prepareGmcDoctor() {
-    final var doctorsForDB = buildDoctorsForDBList();
+    final var doctorsForDb = buildDoctorsForDbList();
     return TraineeSummaryDto.builder()
-        .traineeInfo(doctorsForDB)
-        .countTotal(doctorsForDB.size())
-        .countUnderNotice(1l)
+        .traineeInfo(doctorsForDb)
+        .countTotal(doctorsForDb.size())
+        .countUnderNotice(1L)
         .build();
   }
 
-  private List<TraineeInfoDto> buildDoctorsForDBList() {
+  private List<TraineeInfoDto> buildDoctorsForDbList() {
     final var doctor1 = TraineeInfoDto.builder()
         .gmcReferenceNumber(gmcRef1)
         .doctorFirstName(firstName1)
