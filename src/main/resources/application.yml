@@ -10,6 +10,7 @@ spring:
     port: ${RABBITMQ_PORT:5672}
     username: ${RABBITMQ_USERNAME:guest}
     password: ${RABBITMQ_PASSWORD:guest}
+    ssl.enabled: ${RABBITMQ_USE_SSL:false}
   data:
     mongodb:
       uri: mongodb://${MONGODB_USERNAME:root}:${MONGODB_PASSWORD:password}@${MONGODB_HOST:localhost}:${MONGODB_PORT:27017}/${MONGODB_DATABASE:revalidation}?authSource=admin&authMechanism=SCRAM-SHA-1
@@ -62,9 +63,9 @@ app:
     sort.order: ${SORT_ORDER:asc,desc}
 
   rabbit:
-    exchange: ${EXCHANGE:gmc-connect-exchange}
-    queue: ${QUEUE:gmc-doctors-queue}
-    routingKey: ${ROUTING_KEY:uk.nhs.hee}
+    exchange: ${EXCHANGE:reval.exchange.gmcsync}
+    queue: ${QUEUE:reval.queue.gmcsync.recommendation}
+    routingKey: ${ROUTING_KEY:reval.gmcsync}
 
 sentry:
   dsn: ${SENTRY_DSN:}
