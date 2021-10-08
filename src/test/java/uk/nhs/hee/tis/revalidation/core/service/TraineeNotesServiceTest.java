@@ -21,13 +21,16 @@
 
 package uk.nhs.hee.tis.revalidation.core.service;
 
-import static java.time.LocalDate.now;
+import static java.time.LocalDateTime.now;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.github.javafaker.Faker;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,6 +38,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import uk.nhs.hee.tis.revalidation.core.dto.TraineeNoteDto;
 import uk.nhs.hee.tis.revalidation.core.entity.TraineeNote;
 import uk.nhs.hee.tis.revalidation.core.repository.TraineeNotesRepository;
 
@@ -49,8 +53,8 @@ class TraineeNotesServiceTest {
   private String id;
   private String gmcId;
   private String text;
-  private LocalDate createdDate;
-  private LocalDate updatedDate;
+  private LocalDateTime createdDate;
+  private LocalDateTime updatedDate;
 
   @BeforeEach
   public void setup() {
@@ -68,6 +72,25 @@ class TraineeNotesServiceTest {
     assertThat(notesDto.getText(), is(text));
     assertThat(notesDto.getCreatedDate(), is(createdDate));
     assertThat(notesDto.getUpdatedDate(), is(updatedDate));
+  }
+
+  @Test
+  void shouldSaveTraineeNote() {
+    when(traineeNotesRepository.save(any(TraineeNote.class))).thenReturn(prepareTraineeNote());
+
+    final var traineeNoteDto = TraineeNoteDto.builder()
+        .gmcId(gmcId)
+        .text(text)
+        .createdDate(createdDate)
+        .build();
+    final var returnedTraineeNote = traineeNotesService.saveTraineeNote(traineeNoteDto);
+
+    verify(traineeNotesRepository, times(1)).save(any(TraineeNote.class));
+
+    assertThat(returnedTraineeNote.getGmcId(), is(gmcId));
+    assertThat(returnedTraineeNote.getText(), is(text));
+    assertThat(returnedTraineeNote.getCreatedDate(), is(createdDate));
+    assertThat(returnedTraineeNote.getUpdatedDate(), is(updatedDate));
   }
 
   private void setupMockData() {

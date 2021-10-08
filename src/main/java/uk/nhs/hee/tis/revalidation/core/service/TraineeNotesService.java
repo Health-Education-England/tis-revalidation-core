@@ -21,11 +21,15 @@
 
 package uk.nhs.hee.tis.revalidation.core.service;
 
+import static java.time.LocalDateTime.now;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import uk.nhs.hee.tis.revalidation.core.dto.TraineeNoteDto;
 import uk.nhs.hee.tis.revalidation.core.dto.TraineeNotesDto;
+import uk.nhs.hee.tis.revalidation.core.entity.TraineeNote;
 import uk.nhs.hee.tis.revalidation.core.repository.TraineeNotesRepository;
 
 @Slf4j
@@ -48,5 +52,22 @@ public class TraineeNotesService {
         .gmcId(gmcId)
         .notes(notes)
         .build();
+  }
+
+  /**
+   * Save trainee note.
+   *
+   * @param traineeNoteDto to persist note
+   */
+  public TraineeNote saveTraineeNote(final TraineeNoteDto traineeNoteDto) {
+    log.info("In service, received request to save trainee note: {}", traineeNoteDto);
+    final var traineeNote = TraineeNote.builder()
+        .gmcId(traineeNoteDto.getGmcId())
+        .text(traineeNoteDto.getText())
+        .createdDate(now())
+        .updatedDate(now())
+        .build();
+
+    return traineeNotesRepository.save(traineeNote);
   }
 }

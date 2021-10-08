@@ -21,16 +21,18 @@
 
 package uk.nhs.hee.tis.revalidation.core.controller;
 
-import static java.time.LocalDate.now;
+import static java.time.LocalDateTime.now;
 import static java.util.List.of;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javafaker.Faker;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,7 +41,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import uk.nhs.hee.tis.revalidation.core.dto.TraineeNoteDto;
 import uk.nhs.hee.tis.revalidation.core.dto.TraineeNotesDto;
 import uk.nhs.hee.tis.revalidation.core.entity.TraineeNote;
 import uk.nhs.hee.tis.revalidation.core.service.TraineeNotesService;
@@ -88,6 +92,40 @@ class TraineeNotesControllerTest {
         .andDo(print())
         .andExpect(content().json(mapper.writeValueAsString(prepareTraineeNotesDto())));
 
+  }
+
+  @Test
+  void shouldReturn404ValueResponseWhenGmcIdIsNull() throws Exception {
+    String gmcId = null;
+    this.mockMvc.perform(get("/api/trainee/{gmcId}/notes", gmcId))
+        .andDo(print())
+        .andExpect(status().is(404));
+  }
+
+  @Test
+  void shouldCreateTraineeNote() throws Exception {
+    final var traineeNoteDto = TraineeNoteDto.builder()
+        .gmcId(gmcId)
+        .text(text)
+        .createdDate(LocalDateTime.now())
+        .build();
+    when(traineeNotesService.saveTraineeNote(traineeNoteDto)).thenReturn(traineeNote);
+    this.mockMvc.perform(post("/api/trainee/notes/add")
+        .contentType(MediaType.APPLICATION_JSON)
+        .accept(MediaType.APPLICATION_JSON)
+        .content(mapper.writeValueAsBytes(traineeNoteDto)))
+        .andDo(print())
+        .andExpect(status().isOk());
+  }
+
+  @Test
+  void shouldReturn400ValueResponseWhenDtoIsNull() throws Exception {
+    this.mockMvc.perform(post("/api/trainee/notes/add")
+        .contentType(MediaType.APPLICATION_JSON)
+        .accept(MediaType.APPLICATION_JSON)
+        .content(mapper.writeValueAsBytes(null)))
+        .andDo(print())
+        .andExpect(status().is(400));
   }
 
   private TraineeNotesDto prepareTraineeNotesDto() {

@@ -27,8 +27,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import uk.nhs.hee.tis.revalidation.core.dto.TraineeNoteDto;
 import uk.nhs.hee.tis.revalidation.core.dto.TraineeNotesDto;
 import uk.nhs.hee.tis.revalidation.core.service.TraineeNotesService;
 
@@ -57,4 +60,16 @@ public class TraineeNotesController {
     return ResponseEntity.ok().body(null);
   }
 
+  /**
+   * POST  /api/trainee/notes/add : add trainee note.
+   *
+   * @param traineeNoteDto trainee Note Dto to add note
+   * @return the ResponseEntity with status 200 (OK)
+   */
+  @PostMapping("/notes/add")
+  public ResponseEntity<String> createNote(@RequestBody final TraineeNoteDto traineeNoteDto) {
+    log.info("In controller, received request to create note: {}", traineeNoteDto);
+    final var traineeNote = traineeNotesService.saveTraineeNote(traineeNoteDto);
+    return ResponseEntity.ok(traineeNote.getId());
+  }
 }
