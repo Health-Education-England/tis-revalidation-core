@@ -77,7 +77,9 @@ public class TraineeNotesController {
    * @return the ResponseEntity with status 200 (OK)
    */
   @PostMapping("/notes/add")
-  public ResponseEntity<TraineeNoteDto> createNote(@RequestBody final TraineeNoteDto traineeNoteDto) {
+  public ResponseEntity<TraineeNoteDto> createNote(
+      @RequestBody final TraineeNoteDto traineeNoteDto
+  ) {
     log.info("In controller, received request to create note: {}", traineeNoteDto);
     final var traineeNote = traineeNotesService.saveTraineeNote(traineeNoteDto);
     return ResponseEntity.ok().body(traineeNoteMapper.toDto(traineeNote));
