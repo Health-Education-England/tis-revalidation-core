@@ -46,6 +46,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import uk.nhs.hee.tis.revalidation.core.dto.TraineeNoteDto;
 import uk.nhs.hee.tis.revalidation.core.dto.TraineeNotesDto;
 import uk.nhs.hee.tis.revalidation.core.entity.TraineeNote;
+import uk.nhs.hee.tis.revalidation.core.mapper.TraineeNoteMapper;
 import uk.nhs.hee.tis.revalidation.core.service.TraineeNotesService;
 
 @ExtendWith(MockitoExtension.class)
@@ -57,6 +58,8 @@ class TraineeNotesControllerTest {
   private MockMvc mockMvc;
   @Autowired
   private ObjectMapper mapper;
+  @MockBean
+  private TraineeNoteMapper traineeNoteMapper;
   @MockBean
   private TraineeNotesService traineeNotesService;
   private TraineeNote traineeNote;
