@@ -94,6 +94,27 @@ class TraineeNotesServiceTest {
     assertThat(returnedTraineeNote.getUpdatedDate(), is(updatedDate));
   }
 
+  @Test
+  void shouldEditTraineeNote() {
+    when(traineeNotesRepository.save(any(TraineeNote.class))).thenReturn(prepareTraineeNote());
+
+    final var traineeNoteDto = TraineeNoteDto.builder()
+        .id(id)
+        .gmcId(gmcId)
+        .text(text)
+        .createdDate(createdDate)
+        .build();
+    final var returnedTraineeNote = traineeNotesService.editTraineeNote(traineeNoteDto);
+
+    verify(traineeNotesRepository, times(1)).save(any(TraineeNote.class));
+
+    assertThat(returnedTraineeNote.getId(), is(id));
+    assertThat(returnedTraineeNote.getGmcId(), is(gmcId));
+    assertThat(returnedTraineeNote.getText(), is(text));
+    assertThat(returnedTraineeNote.getCreatedDate(), is(createdDate));
+    assertThat(returnedTraineeNote.getUpdatedDate(), is(updatedDate));
+  }
+
   private void setupMockData() {
     id = faker.number().digits(7);
     gmcId = faker.number().digits(8);

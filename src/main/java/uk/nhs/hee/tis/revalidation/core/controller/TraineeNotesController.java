@@ -23,11 +23,11 @@ package uk.nhs.hee.tis.revalidation.core.controller;
 
 import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -82,6 +82,26 @@ public class TraineeNotesController {
   ) {
     log.info("In controller, received request to create note: {}", traineeNoteDto);
     final var traineeNote = traineeNotesService.saveTraineeNote(traineeNoteDto);
+    return ResponseEntity.ok().body(traineeNoteMapper.toDto(traineeNote));
+  }
+
+  /**
+   * PUT  /api/trainee/notes/edit : edit trainee note.
+   *
+   * @param traineeNoteDto trainee Note Dto to edit note
+   * @return the ResponseEntity with status 200 (OK)
+   */
+  @PutMapping("/notes/edit")
+  public ResponseEntity<TraineeNoteDto> editNote(@RequestBody final TraineeNoteDto traineeNoteDto) {
+    log.info("In controller, received request to edit note: {}", traineeNoteDto);
+    if (Objects.isNull(traineeNoteDto.getId())) {
+      return createNote(traineeNoteDto);
+    } else if (Objects.isNull(traineeNoteDto.getGmcId()) || Objects
+        .isNull(traineeNoteDto.getCreatedDate())) {
+      return ResponseEntity.badRequest().header("error", "GMC id or creation date can not be null")
+          .body(null);
+    }
+    final var traineeNote = traineeNotesService.editTraineeNote(traineeNoteDto);
     return ResponseEntity.ok().body(traineeNoteMapper.toDto(traineeNote));
   }
 }
