@@ -26,6 +26,7 @@ import static java.util.List.of;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -119,6 +120,74 @@ class TraineeNotesControllerTest {
         .content(mapper.writeValueAsBytes(traineeNoteDto)))
         .andDo(print())
         .andExpect(status().isOk());
+  }
+
+  @Test
+  void shouldVisitCreateNoteMethodWhenIdIsNull() throws Exception {
+    final var traineeNoteDto = TraineeNoteDto.builder()
+        .gmcId(gmcId)
+        .text(text)
+        .createdDate(LocalDateTime.now())
+        .build();
+    when(traineeNotesService.saveTraineeNote(traineeNoteDto)).thenReturn(traineeNote);
+    this.mockMvc.perform(put("/api/trainee/notes/edit")
+        .contentType(MediaType.APPLICATION_JSON)
+        .accept(MediaType.APPLICATION_JSON)
+        .content(mapper.writeValueAsBytes(traineeNoteDto)))
+        .andDo(print())
+        .andExpect(status().isOk());
+  }
+
+  @Test
+  void shouldEditTraineeNoteWhenIdIsNotNull() throws Exception {
+    final var traineeNoteDto = TraineeNoteDto.builder()
+        .id(id)
+        .gmcId(gmcId)
+        .text(text)
+        .createdDate(LocalDateTime.now())
+        .updatedDate(LocalDateTime.now())
+        .build();
+    when(traineeNotesService.editTraineeNote(traineeNoteDto)).thenReturn(traineeNote);
+    this.mockMvc.perform(put("/api/trainee/notes/edit")
+        .contentType(MediaType.APPLICATION_JSON)
+        .accept(MediaType.APPLICATION_JSON)
+        .content(mapper.writeValueAsBytes(traineeNoteDto)))
+        .andDo(print())
+        .andExpect(status().isOk());
+  }
+
+  @Test
+  void shouldReturnBadRequestWhenGmcIdIsNull() throws Exception {
+    final var traineeNoteDto = TraineeNoteDto.builder()
+        .id(id)
+        .text(text)
+        .createdDate(LocalDateTime.now())
+        .updatedDate(LocalDateTime.now())
+        .build();
+    when(traineeNotesService.editTraineeNote(traineeNoteDto)).thenReturn(traineeNote);
+    this.mockMvc.perform(put("/api/trainee/notes/edit")
+        .contentType(MediaType.APPLICATION_JSON)
+        .accept(MediaType.APPLICATION_JSON)
+        .content(mapper.writeValueAsBytes(traineeNoteDto)))
+        .andDo(print())
+        .andExpect(status().is(400));
+  }
+
+  @Test
+  void shouldReturnBadRequestWhenCreatedDateIsNullWhenEditNote() throws Exception {
+    final var traineeNoteDto = TraineeNoteDto.builder()
+        .id(id)
+        .gmcId(gmcId)
+        .text(text)
+        .updatedDate(LocalDateTime.now())
+        .build();
+    when(traineeNotesService.editTraineeNote(traineeNoteDto)).thenReturn(traineeNote);
+    this.mockMvc.perform(put("/api/trainee/notes/edit")
+        .contentType(MediaType.APPLICATION_JSON)
+        .accept(MediaType.APPLICATION_JSON)
+        .content(mapper.writeValueAsBytes(traineeNoteDto)))
+        .andDo(print())
+        .andExpect(status().is(400));
   }
 
   @Test

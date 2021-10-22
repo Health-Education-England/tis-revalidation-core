@@ -70,4 +70,22 @@ public class TraineeNotesService {
 
     return traineeNotesRepository.save(traineeNote);
   }
+
+  /**
+   * Edit trainee note.
+   *
+   * @param traineeNoteDto to edit note
+   */
+  public TraineeNote editTraineeNote(final TraineeNoteDto traineeNoteDto) {
+    log.info("In service, received request to edit trainee note: {}", traineeNoteDto);
+    final var traineeNote = TraineeNote.builder()
+        .id(traineeNoteDto.getId())
+        .gmcId(traineeNoteDto.getGmcId())
+        .text(traineeNoteDto.getText())
+        .createdDate(traineeNoteDto.getCreatedDate())
+        .updatedDate(now())
+        .build();
+
+    return traineeNotesRepository.save(traineeNote);
+  }
 }
