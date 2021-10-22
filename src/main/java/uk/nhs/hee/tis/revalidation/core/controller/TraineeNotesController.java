@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uk.nhs.hee.tis.revalidation.core.dto.TraineeNoteDto;
 import uk.nhs.hee.tis.revalidation.core.dto.TraineeNotesDto;
+import uk.nhs.hee.tis.revalidation.core.mapper.TraineeNoteMapper;
 import uk.nhs.hee.tis.revalidation.core.service.TraineeNotesService;
 
 @Slf4j
@@ -40,8 +41,17 @@ import uk.nhs.hee.tis.revalidation.core.service.TraineeNotesService;
 @RequestMapping("/api/trainee")
 public class TraineeNotesController {
 
-  @Autowired
   private TraineeNotesService traineeNotesService;
+
+  private TraineeNoteMapper traineeNoteMapper;
+
+  public TraineeNotesController(
+      TraineeNotesService traineeNotesService,
+      TraineeNoteMapper traineeNoteMapper
+  ) {
+    this.traineeNotesService = traineeNotesService;
+    this.traineeNoteMapper = traineeNoteMapper;
+  }
 
   /**
    * GET  /api/trainee/{gmcId}/notes : get trainee notes.
@@ -67,9 +77,11 @@ public class TraineeNotesController {
    * @return the ResponseEntity with status 200 (OK)
    */
   @PostMapping("/notes/add")
-  public ResponseEntity<String> createNote(@RequestBody final TraineeNoteDto traineeNoteDto) {
+  public ResponseEntity<TraineeNoteDto> createNote(
+      @RequestBody final TraineeNoteDto traineeNoteDto
+  ) {
     log.info("In controller, received request to create note: {}", traineeNoteDto);
     final var traineeNote = traineeNotesService.saveTraineeNote(traineeNoteDto);
-    return ResponseEntity.ok(traineeNote.getId());
+    return ResponseEntity.ok().body(traineeNoteMapper.toDto(traineeNote));
   }
 }
