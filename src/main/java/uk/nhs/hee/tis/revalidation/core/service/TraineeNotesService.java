@@ -47,7 +47,7 @@ public class TraineeNotesService {
    */
   public TraineeNotesDto getTraineeNotes(final String gmcId) {
     log.info("Retrieving trainee notes for gmcId: {}", gmcId);
-    final var notes = traineeNotesRepository.findAllByGmcId(gmcId);
+    final var notes = traineeNotesRepository.findAllByGmcIdOrderByUpdatedDateDesc(gmcId);
     return TraineeNotesDto.builder()
         .gmcId(gmcId)
         .notes(notes)

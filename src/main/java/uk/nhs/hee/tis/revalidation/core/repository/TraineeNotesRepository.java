@@ -29,6 +29,6 @@ import uk.nhs.hee.tis.revalidation.core.entity.TraineeNote;
 @Repository
 public interface TraineeNotesRepository extends MongoRepository<TraineeNote, String> {
 
-  List<TraineeNote> findAllByGmcId(final String gmcId);
+  List<TraineeNote> findAllByGmcIdOrderByUpdatedDateDesc(final String gmcId);
 
 }
