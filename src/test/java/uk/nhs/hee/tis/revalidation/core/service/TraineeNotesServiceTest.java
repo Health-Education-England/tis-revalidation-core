@@ -63,7 +63,7 @@ class TraineeNotesServiceTest {
 
   @Test
   void shouldReturnAllNotesForATrainee() throws Exception {
-    when(traineeNotesRepository.findAllByGmcIdOrderByUpdatedDateDesc(gmcId))
+    when(traineeNotesRepository.findAllByGmcIdOrderByCreatedDateDesc(gmcId))
         .thenReturn(List.of(prepareTraineeNote()));
     var notes = traineeNotesService.getTraineeNotes(gmcId);
     assertThat(notes.getNotes().size(), is(1));
