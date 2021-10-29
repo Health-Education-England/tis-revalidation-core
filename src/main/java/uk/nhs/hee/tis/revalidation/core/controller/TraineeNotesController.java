@@ -94,11 +94,8 @@ public class TraineeNotesController {
   @PutMapping("/notes/edit")
   public ResponseEntity<TraineeNoteDto> editNote(@RequestBody final TraineeNoteDto traineeNoteDto) {
     log.info("In controller, received request to edit note: {}", traineeNoteDto);
-    if (Objects.isNull(traineeNoteDto.getId())) {
-      return createNote(traineeNoteDto);
-    } else if (Objects.isNull(traineeNoteDto.getGmcId()) || Objects
-        .isNull(traineeNoteDto.getCreatedDate())) {
-      return ResponseEntity.badRequest().header("error", "GMC id or creation date can not be null")
+    if ((traineeNoteDto.getId()).isEmpty()) {
+      return ResponseEntity.badRequest().header("error", "NoteId can not be null")
           .body(null);
     }
     final var traineeNote = traineeNotesService.editTraineeNote(traineeNoteDto);
