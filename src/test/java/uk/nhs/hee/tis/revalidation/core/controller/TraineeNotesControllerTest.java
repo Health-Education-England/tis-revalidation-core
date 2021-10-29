@@ -22,13 +22,13 @@
 package uk.nhs.hee.tis.revalidation.core.controller;
 
 import static java.time.LocalDateTime.now;
-import static java.util.List.of;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -123,22 +123,6 @@ class TraineeNotesControllerTest {
   }
 
   @Test
-  void shouldVisitCreateNoteMethodWhenIdIsNull() throws Exception {
-    final var traineeNoteDto = TraineeNoteDto.builder()
-        .gmcId(gmcId)
-        .text(text)
-        .createdDate(LocalDateTime.now())
-        .build();
-    when(traineeNotesService.saveTraineeNote(traineeNoteDto)).thenReturn(traineeNote);
-    this.mockMvc.perform(put("/api/trainee/notes/edit")
-        .contentType(MediaType.APPLICATION_JSON)
-        .accept(MediaType.APPLICATION_JSON)
-        .content(mapper.writeValueAsBytes(traineeNoteDto)))
-        .andDo(print())
-        .andExpect(status().isOk());
-  }
-
-  @Test
   void shouldEditTraineeNoteWhenIdIsNotNull() throws Exception {
     final var traineeNoteDto = TraineeNoteDto.builder()
         .id(id)
@@ -157,42 +141,48 @@ class TraineeNotesControllerTest {
   }
 
   @Test
-  void shouldReturnBadRequestWhenGmcIdIsNull() throws Exception {
+  void shouldReturnBadRequestWhenEditNoteIdIsNull() throws Exception {
     final var traineeNoteDto = TraineeNoteDto.builder()
-        .id(id)
+        .gmcId(gmcId)
         .text(text)
-        .createdDate(LocalDateTime.now())
-        .updatedDate(LocalDateTime.now())
         .build();
-    when(traineeNotesService.editTraineeNote(traineeNoteDto)).thenReturn(traineeNote);
     this.mockMvc.perform(put("/api/trainee/notes/edit")
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON)
         .content(mapper.writeValueAsBytes(traineeNoteDto)))
         .andDo(print())
-        .andExpect(status().is(400));
+        .andExpect(status().is(400))
+        .andExpect(header().stringValues("error","Note ID and GMC ID can not be null"));
   }
 
   @Test
-  void shouldReturnBadRequestWhenCreatedDateIsNullWhenEditNote() throws Exception {
+  void shouldReturnBadRequestWhenEditGmcIdIsNull() throws Exception {
     final var traineeNoteDto = TraineeNoteDto.builder()
         .id(id)
-        .gmcId(gmcId)
         .text(text)
-        .updatedDate(LocalDateTime.now())
         .build();
-    when(traineeNotesService.editTraineeNote(traineeNoteDto)).thenReturn(traineeNote);
     this.mockMvc.perform(put("/api/trainee/notes/edit")
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON)
         .content(mapper.writeValueAsBytes(traineeNoteDto)))
         .andDo(print())
-        .andExpect(status().is(400));
+        .andExpect(status().is(400))
+        .andExpect(header().stringValues("error","Note ID and GMC ID can not be null"));
   }
 
   @Test
   void shouldReturn400ValueResponseWhenDtoIsNull() throws Exception {
     this.mockMvc.perform(post("/api/trainee/notes/add")
+        .contentType(MediaType.APPLICATION_JSON)
+        .accept(MediaType.APPLICATION_JSON)
+        .content(mapper.writeValueAsBytes(null)))
+        .andDo(print())
+        .andExpect(status().is(400));
+  }
+
+  @Test
+  void shouldReturn400ValueResponseWhenEditDtoIsNull() throws Exception {
+    this.mockMvc.perform(put("/api/trainee/notes/edit")
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON)
         .content(mapper.writeValueAsBytes(null)))

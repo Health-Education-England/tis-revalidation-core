@@ -95,12 +95,12 @@ public class TraineeNotesService {
       TraineeNote existingNote = optionalNote.get();
 
       final var traineeNote = TraineeNote.builder()
-        .id(existingNote.getId())
-        .gmcId(existingNote.getGmcId())
-        .text(traineeNoteDto.getText())
-        .createdDate(existingNote.getCreatedDate())
-        .updatedDate(now())
-        .build();
+          .id(existingNote.getId())
+          .gmcId(existingNote.getGmcId())
+          .text(traineeNoteDto.getText())
+          .createdDate(existingNote.getCreatedDate())
+          .updatedDate(now())
+          .build();
 
       return traineeNotesRepository.save(traineeNote);
     }
