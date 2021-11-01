@@ -32,9 +32,12 @@ import static org.mockito.Mockito.when;
 import com.github.javafaker.Faker;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -55,6 +58,8 @@ class TraineeNotesServiceTest {
   private String text;
   private LocalDateTime createdDate;
   private LocalDateTime updatedDate;
+  @Captor
+  private ArgumentCaptor<TraineeNote> saveNoteCaptor;
 
   @BeforeEach
   public void setup() {
@@ -68,6 +73,19 @@ class TraineeNotesServiceTest {
     var notes = traineeNotesService.getTraineeNotes(gmcId);
     assertThat(notes.getNotes().size(), is(1));
     final var notesDto = notes.getNotes().get(0);
+    assertThat(notesDto.getId(), is(id));
+    assertThat(notesDto.getGmcId(), is(gmcId));
+    assertThat(notesDto.getText(), is(text));
+    assertThat(notesDto.getCreatedDate(), is(createdDate));
+    assertThat(notesDto.getUpdatedDate(), is(updatedDate));
+  }
+
+  @Test
+  void shouldReturnNoteByNoteId() throws Exception {
+    when(traineeNotesRepository.findById(id))
+        .thenReturn(prepareOptionalTraineeNote());
+    var optionalNote = traineeNotesService.getTraineeNotesByNoteId(id);
+    TraineeNote notesDto = optionalNote.get();
     assertThat(notesDto.getId(), is(id));
     assertThat(notesDto.getGmcId(), is(gmcId));
     assertThat(notesDto.getText(), is(text));
@@ -96,23 +114,40 @@ class TraineeNotesServiceTest {
 
   @Test
   void shouldEditTraineeNote() {
-    when(traineeNotesRepository.save(any(TraineeNote.class))).thenReturn(prepareTraineeNote());
+    when(traineeNotesService.getTraineeNotesByNoteId(id)).thenReturn(prepareOptionalTraineeNote());
 
     final var traineeNoteDto = TraineeNoteDto.builder()
         .id(id)
         .gmcId(gmcId)
         .text(text)
-        .createdDate(createdDate)
         .build();
-    final var returnedTraineeNote = traineeNotesService.editTraineeNote(traineeNoteDto);
+    traineeNotesService.editTraineeNote(traineeNoteDto);
+
+    verify(traineeNotesRepository).save(saveNoteCaptor.capture());
+    TraineeNote saveNoteValue = saveNoteCaptor.getValue();
+
+    TraineeNote existingNote = prepareOptionalTraineeNote().get();
+    assertThat(saveNoteValue.getId(), is(existingNote.getId()));
+    assertThat(saveNoteValue.getGmcId(), is(existingNote.getGmcId()));
+    assertThat(saveNoteValue.getText(), is(text));
+    assertThat(saveNoteValue.getCreatedDate(), is(existingNote.getCreatedDate()));
+  }
+
+  @Test
+  void shouldCreateNewNoteIfNoExistingNoteWhenEditTraineeNote() {
+    final var traineeNoteDto = TraineeNoteDto.builder()
+        .id("000")
+        .gmcId(gmcId)
+        .text(text)
+        .build();
+    traineeNotesService.editTraineeNote(traineeNoteDto);
 
     verify(traineeNotesRepository, times(1)).save(any(TraineeNote.class));
+    verify(traineeNotesRepository).save(saveNoteCaptor.capture());
+    TraineeNote saveNoteValue = saveNoteCaptor.getValue();
 
-    assertThat(returnedTraineeNote.getId(), is(id));
-    assertThat(returnedTraineeNote.getGmcId(), is(gmcId));
-    assertThat(returnedTraineeNote.getText(), is(text));
-    assertThat(returnedTraineeNote.getCreatedDate(), is(createdDate));
-    assertThat(returnedTraineeNote.getUpdatedDate(), is(updatedDate));
+    assertThat(saveNoteValue.getGmcId(), is(gmcId));
+    assertThat(saveNoteValue.getText(), is(text));
   }
 
   private void setupMockData() {
@@ -131,5 +166,15 @@ class TraineeNotesServiceTest {
         .createdDate(createdDate)
         .updatedDate(updatedDate)
         .build();
+  }
+
+  private Optional<TraineeNote> prepareOptionalTraineeNote() {
+    return Optional.ofNullable(TraineeNote.builder()
+        .id(id)
+        .gmcId(gmcId)
+        .text(text)
+        .createdDate(createdDate)
+        .updatedDate(updatedDate)
+        .build());
   }
 }

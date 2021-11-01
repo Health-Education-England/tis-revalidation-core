@@ -23,6 +23,7 @@ package uk.nhs.hee.tis.revalidation.core.service;
 
 import static java.time.LocalDateTime.now;
 
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,6 +56,16 @@ public class TraineeNotesService {
   }
 
   /**
+   * Get trainee notes details by note id.
+   *
+   * @param id to retrieve notes
+   */
+  public Optional<TraineeNote> getTraineeNotesByNoteId(final String id) {
+    log.info("Retrieving trainee notes for note Id: {}", id);
+    return traineeNotesRepository.findById(id);
+  }
+
+  /**
    * Save trainee note.
    *
    * @param traineeNoteDto to persist note
@@ -78,14 +89,23 @@ public class TraineeNotesService {
    */
   public TraineeNote editTraineeNote(final TraineeNoteDto traineeNoteDto) {
     log.info("In service, received request to edit trainee note: {}", traineeNoteDto);
-    final var traineeNote = TraineeNote.builder()
-        .id(traineeNoteDto.getId())
-        .gmcId(traineeNoteDto.getGmcId())
-        .text(traineeNoteDto.getText())
-        .createdDate(traineeNoteDto.getCreatedDate())
-        .updatedDate(now())
-        .build();
 
-    return traineeNotesRepository.save(traineeNote);
+    Optional<TraineeNote> optionalNote = getTraineeNotesByNoteId(traineeNoteDto.getId());
+    if (optionalNote.isPresent()) {
+      TraineeNote existingNote = optionalNote.get();
+
+      final var traineeNote = TraineeNote.builder()
+          .id(existingNote.getId())
+          .gmcId(existingNote.getGmcId())
+          .text(traineeNoteDto.getText())
+          .createdDate(existingNote.getCreatedDate())
+          .updatedDate(now())
+          .build();
+
+      return traineeNotesRepository.save(traineeNote);
+    }
+    else {
+      return saveTraineeNote(traineeNoteDto);
+    }
   }
 }
