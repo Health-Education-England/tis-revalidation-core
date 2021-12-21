@@ -34,10 +34,4 @@ public class RabbitMessageListener {
 
   @Autowired
   private DoctorsForDbService doctorsForDbService;
-
-  @RabbitListener(queues = "${app.rabbit.queue}")
-  public void receivedMessage(final DoctorsForDbDto gmcDoctor) {
-    log.info("Message received from rabbit: {}", gmcDoctor);
-    doctorsForDbService.updateTrainee(gmcDoctor);
-  }
 }
