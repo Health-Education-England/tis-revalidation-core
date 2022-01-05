@@ -4,6 +4,13 @@
 Revalidation core service provide trainee information to other microservices.
 
 ## TODO
+ - Clean up which aspects of revalidation should be fulfilled by this service.
+ - The following endpoints are **NOT** actively routed to this service from the integration service:
+    - `/revalidation/api/admins` (Currently used by recommendation service)
+    - `/revalidation/api/doctors/*` (Currently used by recommendation service)
+ - The following endpoints **ARE** actively routed to this service from the integration service:
+    - `/revalidation/api/environment` (appears to be superfluous)
+    - `/revalidation/api/trainee/*` (used for notes functionality, should this just be a "notes service?")
  - Provide `SENTRY_DSN` and `SENTRY_ENVIRONMENT` as environmental variables
    during deployment and need to make the `SENTRY_ENVIRONMENT` dynamic in the future.
  - Add repository to Dependabot.
