@@ -99,7 +99,7 @@ public class DoctorsForDbService {
 
     if (traineeCoreDto != null) {
       traineeInfoDtoBuilder
-          .cctDate(traineeCoreDto.getCctDate())
+          .curriculumEndDate(traineeCoreDto.getCurriculumEndDate())
           .programmeName(traineeCoreDto.getProgrammeName())
           .programmeMembershipType(traineeCoreDto.getProgrammeMembershipType())
           .currentGrade(traineeCoreDto.getCurrentGrade());

@@ -130,11 +130,11 @@ public class DoctorsForDbServiceTest {
   private RecommendationStatus status3;
   private RecommendationStatus status4;
   private RecommendationStatus status5;
-  private LocalDate cctDate1;
-  private LocalDate cctDate2;
-  private LocalDate cctDate3;
-  private LocalDate cctDate4;
-  private LocalDate cctDate5;
+  private LocalDate curriculumEndDate1;
+  private LocalDate curriculumEndDate2;
+  private LocalDate curriculumEndDate3;
+  private LocalDate curriculumEndDate4;
+  private LocalDate curriculumEndDate5;
   private String progName1;
   private String progName2;
   private String progName3;
@@ -167,27 +167,27 @@ public class DoctorsForDbServiceTest {
         .thenReturn(
             Map.of(gmcRef1, coreDto1, gmcRef2, coreDto2, gmcRef3, coreDto3, gmcRef4, coreDto4,
                 gmcRef5, coreDto5));
-    when(coreDto1.getCctDate()).thenReturn(cctDate1);
+    when(coreDto1.getCurriculumEndDate()).thenReturn(curriculumEndDate1);
     when(coreDto1.getProgrammeName()).thenReturn(progName1);
     when(coreDto1.getProgrammeMembershipType()).thenReturn(memType1);
     when(coreDto1.getCurrentGrade()).thenReturn(grade1);
 
-    when(coreDto2.getCctDate()).thenReturn(cctDate2);
+    when(coreDto2.getCurriculumEndDate()).thenReturn(curriculumEndDate2);
     when(coreDto2.getProgrammeName()).thenReturn(progName2);
     when(coreDto2.getProgrammeMembershipType()).thenReturn(memType2);
     when(coreDto2.getCurrentGrade()).thenReturn(grade2);
 
-    when(coreDto3.getCctDate()).thenReturn(cctDate3);
+    when(coreDto3.getCurriculumEndDate()).thenReturn(curriculumEndDate3);
     when(coreDto3.getProgrammeName()).thenReturn(progName3);
     when(coreDto3.getProgrammeMembershipType()).thenReturn(memType3);
     when(coreDto3.getCurrentGrade()).thenReturn(grade3);
 
-    when(coreDto4.getCctDate()).thenReturn(cctDate4);
+    when(coreDto4.getCurriculumEndDate()).thenReturn(curriculumEndDate4);
     when(coreDto4.getProgrammeName()).thenReturn(progName4);
     when(coreDto4.getProgrammeMembershipType()).thenReturn(memType4);
     when(coreDto4.getCurrentGrade()).thenReturn(grade4);
 
-    when(coreDto5.getCctDate()).thenReturn(cctDate5);
+    when(coreDto5.getCurriculumEndDate()).thenReturn(curriculumEndDate5);
     when(coreDto5.getProgrammeName()).thenReturn(progName5);
     when(coreDto5.getProgrammeMembershipType()).thenReturn(memType5);
     when(coreDto5.getCurrentGrade()).thenReturn(grade5);
@@ -219,7 +219,7 @@ public class DoctorsForDbServiceTest {
     assertThat(doctorsForDb.get(0).getUnderNotice(), is(un1.name()));
     assertThat(doctorsForDb.get(0).getSanction(), is(sanction1));
     assertThat(doctorsForDb.get(0).getDoctorStatus(), is(status1.name()));
-    assertThat(doctorsForDb.get(0).getCctDate(), is(cctDate1));
+    assertThat(doctorsForDb.get(0).getCurriculumEndDate(), is(curriculumEndDate1));
     assertThat(doctorsForDb.get(0).getProgrammeName(), is(progName1));
     assertThat(doctorsForDb.get(0).getProgrammeMembershipType(), is(memType1));
     assertThat(doctorsForDb.get(0).getCurrentGrade(), is(grade1));
@@ -232,7 +232,7 @@ public class DoctorsForDbServiceTest {
     assertThat(doctorsForDb.get(1).getUnderNotice(), is(un2.name()));
     assertThat(doctorsForDb.get(1).getSanction(), is(sanction2));
     assertThat(doctorsForDb.get(1).getDoctorStatus(), is(status2.name()));
-    assertThat(doctorsForDb.get(1).getCctDate(), is(cctDate2));
+    assertThat(doctorsForDb.get(1).getCurriculumEndDate(), is(curriculumEndDate2));
     assertThat(doctorsForDb.get(1).getProgrammeName(), is(progName2));
     assertThat(doctorsForDb.get(1).getProgrammeMembershipType(), is(memType2));
     assertThat(doctorsForDb.get(1).getCurrentGrade(), is(grade2));
@@ -245,7 +245,7 @@ public class DoctorsForDbServiceTest {
     assertThat(doctorsForDb.get(2).getUnderNotice(), is(un3.name()));
     assertThat(doctorsForDb.get(2).getSanction(), is(sanction3));
     assertThat(doctorsForDb.get(2).getDoctorStatus(), is(status3.name()));
-    assertThat(doctorsForDb.get(2).getCctDate(), is(cctDate3));
+    assertThat(doctorsForDb.get(2).getCurriculumEndDate(), is(curriculumEndDate3));
     assertThat(doctorsForDb.get(2).getProgrammeName(), is(progName3));
     assertThat(doctorsForDb.get(2).getProgrammeMembershipType(), is(memType3));
     assertThat(doctorsForDb.get(2).getCurrentGrade(), is(grade3));
@@ -258,7 +258,7 @@ public class DoctorsForDbServiceTest {
     assertThat(doctorsForDb.get(3).getUnderNotice(), is(un4.name()));
     assertThat(doctorsForDb.get(3).getSanction(), is(sanction4));
     assertThat(doctorsForDb.get(3).getDoctorStatus(), is(status4.name()));
-    assertThat(doctorsForDb.get(3).getCctDate(), is(cctDate4));
+    assertThat(doctorsForDb.get(3).getCurriculumEndDate(), is(curriculumEndDate4));
     assertThat(doctorsForDb.get(3).getProgrammeName(), is(progName4));
     assertThat(doctorsForDb.get(3).getProgrammeMembershipType(), is(memType4));
     assertThat(doctorsForDb.get(3).getCurrentGrade(), is(grade4));
@@ -271,7 +271,7 @@ public class DoctorsForDbServiceTest {
     assertThat(doctorsForDb.get(4).getUnderNotice(), is(un5.name()));
     assertThat(doctorsForDb.get(4).getSanction(), is(sanction5));
     assertThat(doctorsForDb.get(4).getDoctorStatus(), is(status5.name()));
-    assertThat(doctorsForDb.get(4).getCctDate(), is(cctDate5));
+    assertThat(doctorsForDb.get(4).getCurriculumEndDate(), is(curriculumEndDate5));
     assertThat(doctorsForDb.get(4).getProgrammeName(), is(progName5));
     assertThat(doctorsForDb.get(4).getProgrammeMembershipType(), is(memType5));
     assertThat(doctorsForDb.get(4).getCurrentGrade(), is(grade5));
@@ -284,12 +284,12 @@ public class DoctorsForDbServiceTest {
     when(repository.findAllByUnderNoticeIn(pageableAndSortable, "", YES, ON_HOLD)).thenReturn(page);
     when(traineeCoreService.getTraineeInformationFromCore(of(gmcRef1, gmcRef2)))
         .thenReturn(Map.of(gmcRef1, coreDto1, gmcRef2, coreDto2));
-    when(coreDto1.getCctDate()).thenReturn(cctDate1);
+    when(coreDto1.getCurriculumEndDate()).thenReturn(curriculumEndDate1);
     when(coreDto1.getProgrammeName()).thenReturn(progName1);
     when(coreDto1.getProgrammeMembershipType()).thenReturn(memType1);
     when(coreDto1.getCurrentGrade()).thenReturn(grade1);
 
-    when(coreDto2.getCctDate()).thenReturn(cctDate2);
+    when(coreDto2.getCurriculumEndDate()).thenReturn(curriculumEndDate2);
     when(coreDto2.getProgrammeName()).thenReturn(progName2);
     when(coreDto2.getProgrammeMembershipType()).thenReturn(memType2);
     when(coreDto2.getCurrentGrade()).thenReturn(grade2);
@@ -320,7 +320,7 @@ public class DoctorsForDbServiceTest {
     assertThat(doctorsForDb.get(0).getUnderNotice(), is(un1.name()));
     assertThat(doctorsForDb.get(0).getSanction(), is(sanction1));
     assertThat(doctorsForDb.get(0).getDoctorStatus(), is(status1.name()));
-    assertThat(doctorsForDb.get(0).getCctDate(), is(cctDate1));
+    assertThat(doctorsForDb.get(0).getCurriculumEndDate(), is(curriculumEndDate1));
     assertThat(doctorsForDb.get(0).getProgrammeName(), is(progName1));
     assertThat(doctorsForDb.get(0).getProgrammeMembershipType(), is(memType1));
     assertThat(doctorsForDb.get(0).getCurrentGrade(), is(grade1));
@@ -333,7 +333,7 @@ public class DoctorsForDbServiceTest {
     assertThat(doctorsForDb.get(1).getUnderNotice(), is(un2.name()));
     assertThat(doctorsForDb.get(1).getSanction(), is(sanction2));
     assertThat(doctorsForDb.get(1).getDoctorStatus(), is(status2.name()));
-    assertThat(doctorsForDb.get(1).getCctDate(), is(cctDate2));
+    assertThat(doctorsForDb.get(1).getCurriculumEndDate(), is(curriculumEndDate2));
     assertThat(doctorsForDb.get(1).getProgrammeName(), is(progName2));
     assertThat(doctorsForDb.get(1).getProgrammeMembershipType(), is(memType2));
     assertThat(doctorsForDb.get(1).getCurrentGrade(), is(grade2));
@@ -366,12 +366,12 @@ public class DoctorsForDbServiceTest {
     when(repository.findAll(pageableAndSortable, "query")).thenReturn(page);
     when(traineeCoreService.getTraineeInformationFromCore(of(gmcRef1, gmcRef4)))
         .thenReturn(Map.of(gmcRef1, coreDto1, gmcRef4, coreDto4));
-    when(coreDto1.getCctDate()).thenReturn(cctDate1);
+    when(coreDto1.getCurriculumEndDate()).thenReturn(curriculumEndDate1);
     when(coreDto1.getProgrammeName()).thenReturn(progName1);
     when(coreDto1.getProgrammeMembershipType()).thenReturn(memType1);
     when(coreDto1.getCurrentGrade()).thenReturn(grade1);
 
-    when(coreDto4.getCctDate()).thenReturn(cctDate4);
+    when(coreDto4.getCurriculumEndDate()).thenReturn(curriculumEndDate4);
     when(coreDto4.getProgrammeName()).thenReturn(progName4);
     when(coreDto4.getProgrammeMembershipType()).thenReturn(memType4);
     when(coreDto4.getCurrentGrade()).thenReturn(grade4);
@@ -403,7 +403,7 @@ public class DoctorsForDbServiceTest {
     assertThat(doctorsForDb.get(0).getUnderNotice(), is(un1.name()));
     assertThat(doctorsForDb.get(0).getSanction(), is(sanction1));
     assertThat(doctorsForDb.get(0).getDoctorStatus(), is(status1.name()));
-    assertThat(doctorsForDb.get(0).getCctDate(), is(cctDate1));
+    assertThat(doctorsForDb.get(0).getCurriculumEndDate(), is(curriculumEndDate1));
     assertThat(doctorsForDb.get(0).getProgrammeName(), is(progName1));
     assertThat(doctorsForDb.get(0).getProgrammeMembershipType(), is(memType1));
     assertThat(doctorsForDb.get(0).getCurrentGrade(), is(grade1));
@@ -416,7 +416,7 @@ public class DoctorsForDbServiceTest {
     assertThat(doctorsForDb.get(1).getUnderNotice(), is(un4.name()));
     assertThat(doctorsForDb.get(1).getSanction(), is(sanction4));
     assertThat(doctorsForDb.get(1).getDoctorStatus(), is(status4.name()));
-    assertThat(doctorsForDb.get(1).getCctDate(), is(cctDate4));
+    assertThat(doctorsForDb.get(1).getCurriculumEndDate(), is(curriculumEndDate4));
     assertThat(doctorsForDb.get(1).getProgrammeName(), is(progName4));
     assertThat(doctorsForDb.get(1).getProgrammeMembershipType(), is(memType4));
     assertThat(doctorsForDb.get(1).getCurrentGrade(), is(grade4));
@@ -471,11 +471,11 @@ public class DoctorsForDbServiceTest {
     status4 = RecommendationStatus.NOT_STARTED;
     status5 = RecommendationStatus.NOT_STARTED;
 
-    cctDate1 = now();
-    cctDate2 = now();
-    cctDate3 = now();
-    cctDate4 = now();
-    cctDate5 = now();
+    curriculumEndDate1 = now();
+    curriculumEndDate2 = now();
+    curriculumEndDate3 = now();
+    curriculumEndDate4 = now();
+    curriculumEndDate5 = now();
 
     progName1 = faker.lorem().sentence(3);
     progName2 = faker.lorem().sentence(3);

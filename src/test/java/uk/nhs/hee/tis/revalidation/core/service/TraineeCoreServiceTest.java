@@ -61,8 +61,8 @@ public class TraineeCoreServiceTest {
 
   private String gmcId1;
   private String gmcId2;
-  private LocalDate cctDate1;
-  private LocalDate cctDate2;
+  private LocalDate curriculumEndDate1;
+  private LocalDate curriculumEndDate2;
   private String programmeMembershipType1;
   private String programmeMembershipType2;
   private String programmeName1;
@@ -92,7 +92,7 @@ public class TraineeCoreServiceTest {
     final var traineeCoreDto = traineeInformationFromCore.get(gmcId1);
     assertThat(traineeCoreDto, is(notNullValue()));
     assertThat(traineeCoreDto.getGmcId(), is(gmcId1));
-    assertThat(traineeCoreDto.getCctDate(), is(cctDate1));
+    assertThat(traineeCoreDto.getCurriculumEndDate(), is(curriculumEndDate1));
     assertThat(traineeCoreDto.getCurrentGrade(), is(currentGrade1));
     assertThat(traineeCoreDto.getProgrammeMembershipType(), is(programmeMembershipType1));
     assertThat(traineeCoreDto.getProgrammeName(), is(programmeName1));
@@ -112,7 +112,7 @@ public class TraineeCoreServiceTest {
     var traineeCoreDto = traineeInformationFromCore.get(gmcId1);
     assertThat(traineeCoreDto, is(notNullValue()));
     assertThat(traineeCoreDto.getGmcId(), is(gmcId1));
-    assertThat(traineeCoreDto.getCctDate(), is(cctDate1));
+    assertThat(traineeCoreDto.getCurriculumEndDate(), is(curriculumEndDate1));
     assertThat(traineeCoreDto.getCurrentGrade(), is(currentGrade1));
     assertThat(traineeCoreDto.getProgrammeMembershipType(), is(programmeMembershipType1));
     assertThat(traineeCoreDto.getProgrammeName(), is(programmeName1));
@@ -120,7 +120,7 @@ public class TraineeCoreServiceTest {
     traineeCoreDto = traineeInformationFromCore.get(gmcId2);
     assertThat(traineeCoreDto, is(notNullValue()));
     assertThat(traineeCoreDto.getGmcId(), is(gmcId2));
-    assertThat(traineeCoreDto.getCctDate(), is(cctDate2));
+    assertThat(traineeCoreDto.getCurriculumEndDate(), is(curriculumEndDate2));
     assertThat(traineeCoreDto.getCurrentGrade(), is(currentGrade2));
     assertThat(traineeCoreDto.getProgrammeMembershipType(), is(programmeMembershipType2));
     assertThat(traineeCoreDto.getProgrammeName(), is(programmeName2));
@@ -142,8 +142,8 @@ public class TraineeCoreServiceTest {
     gmcId1 = faker.number().digits(8);
     gmcId2 = faker.number().digits(8);
 
-    cctDate1 = now();
-    cctDate2 = now();
+    curriculumEndDate1 = now();
+    curriculumEndDate2 = now();
 
     programmeMembershipType1 = faker.lorem().characters(10);
     programmeMembershipType2 = faker.lorem().characters(10);
@@ -154,9 +154,9 @@ public class TraineeCoreServiceTest {
     currentGrade1 = faker.lorem().characters(5);
     currentGrade2 = faker.lorem().characters(5);
 
-    trainee1 = new TraineeCoreDto(gmcId1, cctDate1, programmeMembershipType1, programmeName1,
-        currentGrade1);
-    trainee2 = new TraineeCoreDto(gmcId2, cctDate2, programmeMembershipType2, programmeName2,
-        currentGrade2);
+    trainee1 = new TraineeCoreDto(gmcId1, curriculumEndDate1, programmeMembershipType1,
+        programmeName1, currentGrade1);
+    trainee2 = new TraineeCoreDto(gmcId2, curriculumEndDate2, programmeMembershipType2,
+        programmeName2, currentGrade2);
   }
 }
