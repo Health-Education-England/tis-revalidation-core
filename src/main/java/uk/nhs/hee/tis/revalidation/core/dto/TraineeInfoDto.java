@@ -47,7 +47,7 @@ public class TraineeInfoDto {
   private String doctorStatus;
   private String programmeName;
   private String programmeMembershipType;
-  private LocalDate cctDate;
+  private LocalDate curriculumEndDate;
   private String currentGrade;
   private String admin;
   private LocalDate lastUpdatedDate;
