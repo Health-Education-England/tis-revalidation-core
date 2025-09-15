@@ -34,6 +34,6 @@ class RevalidationCoreApplicationTest {
 
   @Test
   void contextLoads() {
-
+    // This test is intentionally left blank
   }
 }

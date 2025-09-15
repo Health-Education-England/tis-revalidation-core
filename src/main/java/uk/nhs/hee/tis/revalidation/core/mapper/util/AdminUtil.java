@@ -21,31 +21,19 @@
 
 package uk.nhs.hee.tis.revalidation.core.mapper.util;
 
-import org.mapstruct.Qualifier;
-import org.springframework.stereotype.Component;
-import software.amazon.awssdk.services.cognitoidentityprovider.model.AttributeType;
-import software.amazon.awssdk.services.cognitoidentityprovider.model.UserType;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.List;
+import org.mapstruct.Qualifier;
+import org.springframework.stereotype.Component;
+import software.amazon.awssdk.services.cognitoidentityprovider.model.AttributeType;
+import software.amazon.awssdk.services.cognitoidentityprovider.model.UserType;
 
 @Component
 public class AdminUtil {
 
-  @Qualifier
-  @Target(ElementType.METHOD)
-  @Retention(RetentionPolicy.CLASS)
-  public @interface Email {
-
-  }
-  @Qualifier
-  @Target(ElementType.METHOD)
-  @Retention(RetentionPolicy.CLASS)
-  public @interface FullName {
-
-  }
   @Email
   public String email(UserType userType) {
     List<AttributeType> attributes = userType.attributes();
@@ -74,5 +62,19 @@ public class AdminUtil {
 
   public String username(UserType userType) {
     return userType.username();
+  }
+
+  @Qualifier
+  @Target(ElementType.METHOD)
+  @Retention(RetentionPolicy.CLASS)
+  public @interface Email {
+
+  }
+
+  @Qualifier
+  @Target(ElementType.METHOD)
+  @Retention(RetentionPolicy.CLASS)
+  public @interface FullName {
+
   }
 }

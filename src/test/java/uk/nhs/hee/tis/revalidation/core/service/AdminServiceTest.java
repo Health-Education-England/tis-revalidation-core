@@ -21,6 +21,15 @@
 
 package uk.nhs.hee.tis.revalidation.core.service;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,16 +44,6 @@ import software.amazon.awssdk.services.cognitoidentityprovider.model.UserType;
 import uk.nhs.hee.tis.revalidation.core.dto.AdminDto;
 import uk.nhs.hee.tis.revalidation.core.mapper.AdminMapperImpl;
 import uk.nhs.hee.tis.revalidation.core.mapper.util.AdminUtil;
-
-import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class AdminServiceTest {
@@ -69,9 +68,11 @@ class AdminServiceTest {
     // Given.
     ListUsersInGroupResponse listUsersInGroupResult = ListUsersInGroupResponse.builder()
         .build();
-    listUsersInGroupResult = listUsersInGroupResult.toBuilder().users(Collections.emptyList()).build();
+    listUsersInGroupResult = listUsersInGroupResult.toBuilder().users(Collections.emptyList())
+        .build();
 
-    when(identityProvider.listUsersInGroup(any(ListUsersInGroupRequest.class))).thenReturn(listUsersInGroupResult);
+    when(identityProvider.listUsersInGroup(any(ListUsersInGroupRequest.class))).thenReturn(
+        listUsersInGroupResult);
 
     // When.
     List<AdminDto> assignableAdmins = service.getAssignableAdmins();
@@ -121,14 +122,18 @@ class AdminServiceTest {
     attributeType6 = attributeType6.toBuilder().name("email").build();
     attributeType6 = attributeType6.toBuilder().value("user2@email.com").build();
 
-    user1 = user1.toBuilder().attributes(Arrays.asList(attributeType1, attributeType3, attributeType5)).build();
-    user2 = user2.toBuilder().attributes(Arrays.asList(attributeType2, attributeType4, attributeType6)).build();
+    user1 = user1.toBuilder()
+        .attributes(Arrays.asList(attributeType1, attributeType3, attributeType5)).build();
+    user2 = user2.toBuilder()
+        .attributes(Arrays.asList(attributeType2, attributeType4, attributeType6)).build();
 
     ListUsersInGroupResponse listUsersInGroupResult = ListUsersInGroupResponse.builder()
         .build();
-    listUsersInGroupResult = listUsersInGroupResult.toBuilder().users(Arrays.asList(user1, user2)).build();
+    listUsersInGroupResult = listUsersInGroupResult.toBuilder().users(Arrays.asList(user1, user2))
+        .build();
 
-    when(identityProvider.listUsersInGroup(any(ListUsersInGroupRequest.class))).thenReturn(listUsersInGroupResult);
+    when(identityProvider.listUsersInGroup(any(ListUsersInGroupRequest.class))).thenReturn(
+        listUsersInGroupResult);
 
     // When.
     List<AdminDto> admins = service.getAssignableAdmins();
