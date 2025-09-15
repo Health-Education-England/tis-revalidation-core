@@ -10,7 +10,7 @@ plugins {
 }
 
 group = "uk.nhs.hee.tis.revalidation"
-version = "0.3.0"
+version = "0.4.0"
 sourceCompatibility = "11"
 
 configurations {
@@ -54,7 +54,7 @@ dependencies {
   implementation "org.glassfish.jaxb:jaxb-runtime"
   implementation "io.springfox:springfox-swagger2:3.0.0"
   implementation "io.springfox:springfox-swagger-ui:3.0.0"
-  implementation "com.amazonaws:aws-java-sdk-cognitoidp:1.12.385"
+  implementation "software.amazon.awssdk:cognitoidentityprovider:2.33.6"
 }
 
 checkstyle {
@@ -64,8 +64,8 @@ checkstyle {
 
 jacocoTestReport {
   reports {
-    html.enabled true
-    xml.enabled true
+    html.required.set(true)
+    xml.required.set(true)
   }
 }
 

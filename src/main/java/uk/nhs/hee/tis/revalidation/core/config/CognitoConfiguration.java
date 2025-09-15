@@ -21,16 +21,15 @@
 
 package uk.nhs.hee.tis.revalidation.core.config;
 
-import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProvider;
-import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProviderClientBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityProviderClient;
 
 @Configuration
 public class CognitoConfiguration {
 
   @Bean
-  public AWSCognitoIdentityProvider getAwsIdentityProvider() {
-    return AWSCognitoIdentityProviderClientBuilder.defaultClient();
+  public CognitoIdentityProviderClient getAwsIdentityProvider() {
+    return CognitoIdentityProviderClient.create();
   }
 }

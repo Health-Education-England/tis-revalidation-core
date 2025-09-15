@@ -21,28 +21,30 @@
 
 package uk.nhs.hee.tis.revalidation.core.service;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-
-import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProvider;
-import com.amazonaws.services.cognitoidp.model.AttributeType;
-import com.amazonaws.services.cognitoidp.model.ListUsersInGroupResult;
-import com.amazonaws.services.cognitoidp.model.UserType;
-import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.util.ReflectionUtils;
+import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityProviderClient;
+import software.amazon.awssdk.services.cognitoidentityprovider.model.AttributeType;
+import software.amazon.awssdk.services.cognitoidentityprovider.model.ListUsersInGroupRequest;
+import software.amazon.awssdk.services.cognitoidentityprovider.model.ListUsersInGroupResponse;
+import software.amazon.awssdk.services.cognitoidentityprovider.model.UserType;
 import uk.nhs.hee.tis.revalidation.core.dto.AdminDto;
 import uk.nhs.hee.tis.revalidation.core.mapper.AdminMapperImpl;
 import uk.nhs.hee.tis.revalidation.core.mapper.util.AdminUtil;
+
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class AdminServiceTest {
@@ -50,7 +52,7 @@ class AdminServiceTest {
   private AdminService service;
 
   @Mock
-  private AWSCognitoIdentityProvider identityProvider;
+  private CognitoIdentityProviderClient identityProvider;
 
   @BeforeEach
   void setUp() {
@@ -65,10 +67,11 @@ class AdminServiceTest {
   @Test
   void shouldReturnEmptyListWhenNoAssignableAdminsFound() {
     // Given.
-    ListUsersInGroupResult listUsersInGroupResult = new ListUsersInGroupResult();
-    listUsersInGroupResult.setUsers(Collections.emptyList());
+    ListUsersInGroupResponse listUsersInGroupResult = ListUsersInGroupResponse.builder()
+        .build();
+    listUsersInGroupResult = listUsersInGroupResult.toBuilder().users(Collections.emptyList()).build();
 
-    when(identityProvider.listUsersInGroup(any())).thenReturn(listUsersInGroupResult);
+    when(identityProvider.listUsersInGroup(any(ListUsersInGroupRequest.class))).thenReturn(listUsersInGroupResult);
 
     // When.
     List<AdminDto> assignableAdmins = service.getAssignableAdmins();
@@ -80,43 +83,52 @@ class AdminServiceTest {
   @Test
   void shouldReturnAdminsWhenAssignableAdminsFound() {
     // Given.
-    UserType user1 = new UserType();
-    user1.setUsername("user1");
+    UserType user1 = UserType.builder()
+        .build();
+    user1 = user1.toBuilder().username("user1").build();
 
-    UserType user2 = new UserType();
-    user2.setUsername("user2");
+    UserType user2 = UserType.builder()
+        .build();
+    user2 = user2.toBuilder().username("user2").build();
 
-    AttributeType attributeType1 = new AttributeType();
-    attributeType1.setName("family_name");
-    attributeType1.setValue("user1");
+    AttributeType attributeType1 = AttributeType.builder()
+        .build();
+    attributeType1 = attributeType1.toBuilder().name("family_name").build();
+    attributeType1 = attributeType1.toBuilder().value("user1").build();
 
-    AttributeType attributeType2 = new AttributeType();
-    attributeType2.setName("family_name");
-    attributeType2.setValue("user2");
+    AttributeType attributeType2 = AttributeType.builder()
+        .build();
+    attributeType2 = attributeType2.toBuilder().name("family_name").build();
+    attributeType2 = attributeType2.toBuilder().value("user2").build();
 
-    AttributeType attributeType3 = new AttributeType();
-    attributeType3.setName("given_name");
-    attributeType3.setValue("user1");
+    AttributeType attributeType3 = AttributeType.builder()
+        .build();
+    attributeType3 = attributeType3.toBuilder().name("given_name").build();
+    attributeType3 = attributeType3.toBuilder().value("user1").build();
 
-    AttributeType attributeType4 = new AttributeType();
-    attributeType4.setName("given_name");
-    attributeType4.setValue("user2");
+    AttributeType attributeType4 = AttributeType.builder()
+        .build();
+    attributeType4 = attributeType4.toBuilder().name("given_name").build();
+    attributeType4 = attributeType4.toBuilder().value("user2").build();
 
-    AttributeType attributeType5 = new AttributeType();
-    attributeType5.setName("email");
-    attributeType5.setValue("user1@email.com");
+    AttributeType attributeType5 = AttributeType.builder()
+        .build();
+    attributeType5 = attributeType5.toBuilder().name("email").build();
+    attributeType5 = attributeType5.toBuilder().value("user1@email.com").build();
 
-    AttributeType attributeType6 = new AttributeType();
-    attributeType6.setName("email");
-    attributeType6.setValue("user2@email.com");
+    AttributeType attributeType6 = AttributeType.builder()
+        .build();
+    attributeType6 = attributeType6.toBuilder().name("email").build();
+    attributeType6 = attributeType6.toBuilder().value("user2@email.com").build();
 
-    user1.setAttributes(Arrays.asList(attributeType1, attributeType3, attributeType5));
-    user2.setAttributes(Arrays.asList(attributeType2, attributeType4, attributeType6));
+    user1 = user1.toBuilder().attributes(Arrays.asList(attributeType1, attributeType3, attributeType5)).build();
+    user2 = user2.toBuilder().attributes(Arrays.asList(attributeType2, attributeType4, attributeType6)).build();
 
-    ListUsersInGroupResult listUsersInGroupResult = new ListUsersInGroupResult();
-    listUsersInGroupResult.setUsers(Arrays.asList(user1, user2));
+    ListUsersInGroupResponse listUsersInGroupResult = ListUsersInGroupResponse.builder()
+        .build();
+    listUsersInGroupResult = listUsersInGroupResult.toBuilder().users(Arrays.asList(user1, user2)).build();
 
-    when(identityProvider.listUsersInGroup(any())).thenReturn(listUsersInGroupResult);
+    when(identityProvider.listUsersInGroup(any(ListUsersInGroupRequest.class))).thenReturn(listUsersInGroupResult);
 
     // When.
     List<AdminDto> admins = service.getAssignableAdmins();

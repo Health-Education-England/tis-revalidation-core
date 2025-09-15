@@ -21,10 +21,10 @@
 
 package uk.nhs.hee.tis.revalidation.core.mapper;
 
-import com.amazonaws.services.cognitoidp.model.UserType;
 import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import software.amazon.awssdk.services.cognitoidentityprovider.model.UserType;
 import uk.nhs.hee.tis.revalidation.core.dto.AdminDto;
 import uk.nhs.hee.tis.revalidation.core.mapper.util.AdminUtil;
 import uk.nhs.hee.tis.revalidation.core.mapper.util.AdminUtil.Email;
@@ -33,8 +33,9 @@ import uk.nhs.hee.tis.revalidation.core.mapper.util.AdminUtil.FullName;
 @Mapper(componentModel = "spring", uses = AdminUtil.class)
 public interface AdminMapper {
 
-  @Mapping(target = "fullName", source = "attributes", qualifiedBy = FullName.class)
-  @Mapping(target = "email", source = "attributes", qualifiedBy = Email.class)
+  @Mapping(target = "fullName", source = "userType", qualifiedBy = FullName.class)
+  @Mapping(target = "email", source = "userType", qualifiedBy = Email.class)
+  @Mapping(target = "username", source = "userType")
   AdminDto toDto(UserType userType);
 
   List<AdminDto> toDtos(List<UserType> userTypes);

@@ -21,16 +21,16 @@
 
 package uk.nhs.hee.tis.revalidation.core;
 
-import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProvider;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityProviderClient;
 
 @SpringBootTest
 class RevalidationCoreApplicationTest {
 
   @MockBean
-  private AWSCognitoIdentityProvider identityProvider;
+  private CognitoIdentityProviderClient identityProvider;
 
   @Test
   void contextLoads() {
