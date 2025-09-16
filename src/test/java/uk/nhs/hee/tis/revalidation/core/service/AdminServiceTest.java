@@ -67,8 +67,7 @@ class AdminServiceTest {
   void shouldReturnEmptyListWhenNoAssignableAdminsFound() {
     // Given.
     ListUsersInGroupResponse listUsersInGroupResult = ListUsersInGroupResponse.builder()
-        .build();
-    listUsersInGroupResult = listUsersInGroupResult.toBuilder().users(Collections.emptyList())
+        .users(Collections.emptyList())
         .build();
 
     when(identityProvider.listUsersInGroup(any(ListUsersInGroupRequest.class))).thenReturn(
@@ -128,8 +127,7 @@ class AdminServiceTest {
         .attributes(Arrays.asList(attributeType2, attributeType4, attributeType6)).build();
 
     ListUsersInGroupResponse listUsersInGroupResult = ListUsersInGroupResponse.builder()
-        .build();
-    listUsersInGroupResult = listUsersInGroupResult.toBuilder().users(Arrays.asList(user1, user2))
+        .users(Arrays.asList(user1, user2))
         .build();
 
     when(identityProvider.listUsersInGroup(any(ListUsersInGroupRequest.class))).thenReturn(

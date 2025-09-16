@@ -55,9 +55,9 @@ public class AdminService {
    */
   public List<AdminDto> getAssignableAdmins() {
     ListUsersInGroupRequest request = ListUsersInGroupRequest.builder()
+        .groupName(adminGroup)
+        .userPoolId(adminUserPool)
         .build();
-    request = request.toBuilder().groupName(adminGroup).build();
-    request = request.toBuilder().userPoolId(adminUserPool).build();
 
     // TODO: A limited number of users can be returned before pagination occurs, handle pagination.
     ListUsersInGroupResponse listUsersResult = identityProvider.listUsersInGroup(request);
