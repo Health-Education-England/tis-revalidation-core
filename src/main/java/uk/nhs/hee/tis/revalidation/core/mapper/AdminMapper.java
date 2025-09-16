@@ -35,7 +35,7 @@ public interface AdminMapper {
 
   @Mapping(target = "fullName", source = "userType", qualifiedBy = FullName.class)
   @Mapping(target = "email", source = "userType", qualifiedBy = Email.class)
-  @Mapping(target = "username", source = "userType")
+  @Mapping(target = "username", source = "userType", qualifiedBy = AdminUtil.Username.class)
   AdminDto toDto(UserType userType);
 
   List<AdminDto> toDtos(List<UserType> userTypes);

@@ -60,6 +60,7 @@ public class AdminUtil {
     return givenName + " " + familyName;
   }
 
+  @Username
   public String username(UserType userType) {
     return userType.username();
   }
@@ -75,6 +76,13 @@ public class AdminUtil {
   @Target(ElementType.METHOD)
   @Retention(RetentionPolicy.CLASS)
   public @interface FullName {
+
+  }
+
+  @Qualifier
+  @Target(ElementType.METHOD)
+  @Retention(RetentionPolicy.CLASS)
+  public @interface Username {
 
   }
 }
