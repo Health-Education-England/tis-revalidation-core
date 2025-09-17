@@ -84,43 +84,15 @@ class AdminServiceTest {
   @Test
   void shouldReturnAdminsWhenAssignableAdminsFound() {
     // Given.
-    UserType user1 = UserType.builder()
-        .username("user1")
-        .build();
+    UserType user1 = buildUser("user1");
+    UserType user2 = buildUser("user2");
 
-    UserType user2 = UserType.builder()
-        .username("user2")
-        .build();
-
-    AttributeType attributeType1 = AttributeType.builder()
-        .name("family_name")
-        .value("user1")
-        .build();
-
-    AttributeType attributeType2 = AttributeType.builder()
-        .name("family_name")
-        .value("user2")
-        .build();
-
-    AttributeType attributeType3 = AttributeType.builder()
-        .name("given_name")
-        .value("user1")
-        .build();
-
-    AttributeType attributeType4 = AttributeType.builder()
-        .name("given_name")
-        .value("user2")
-        .build();
-
-    AttributeType attributeType5 = AttributeType.builder()
-        .name("email")
-        .value("user1@email.com")
-        .build();
-
-    AttributeType attributeType6 = AttributeType.builder()
-        .name("email")
-        .value("user2@email.com")
-        .build();
+    AttributeType attributeType1 = buildAttributeType("family_name", "user1");
+    AttributeType attributeType2 = buildAttributeType("family_name", "user2");
+    AttributeType attributeType3 = buildAttributeType("given_name", "user1");
+    AttributeType attributeType4 = buildAttributeType("given_name", "user2");
+    AttributeType attributeType5 = buildAttributeType("email", "user1@email.com");
+    AttributeType attributeType6 = buildAttributeType("email", "user2@email.com");
 
     user1 = user1.toBuilder()
         .attributes(Arrays.asList(attributeType1, attributeType3, attributeType5)).build();
@@ -150,5 +122,13 @@ class AdminServiceTest {
     assertThat("Unexpected username.", admin.getUsername(), is("user2"));
     assertThat("Unexpected full name.", admin.getFullName(), is("user2 user2"));
     assertThat("Unexpected email.", admin.getEmail(), is("user2@email.com"));
+  }
+
+  private UserType buildUser(String username) {
+    return UserType.builder().username(username).build();
+  }
+
+  private AttributeType buildAttributeType(String name, String value) {
+    return AttributeType.builder().name(name).value(value).build();
   }
 }
