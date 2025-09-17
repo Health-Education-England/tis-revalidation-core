@@ -29,13 +29,14 @@ import uk.nhs.hee.tis.revalidation.core.dto.AdminDto;
 import uk.nhs.hee.tis.revalidation.core.mapper.util.AdminUtil;
 import uk.nhs.hee.tis.revalidation.core.mapper.util.AdminUtil.Email;
 import uk.nhs.hee.tis.revalidation.core.mapper.util.AdminUtil.FullName;
+import uk.nhs.hee.tis.revalidation.core.mapper.util.AdminUtil.Username;
 
 @Mapper(componentModel = "spring", uses = AdminUtil.class)
 public interface AdminMapper {
 
   @Mapping(target = "fullName", source = "userType", qualifiedBy = FullName.class)
   @Mapping(target = "email", source = "userType", qualifiedBy = Email.class)
-  @Mapping(target = "username", source = "userType", qualifiedBy = AdminUtil.Username.class)
+  @Mapping(target = "username", source = "userType", qualifiedBy = Username.class)
   AdminDto toDto(UserType userType);
 
   List<AdminDto> toDtos(List<UserType> userTypes);

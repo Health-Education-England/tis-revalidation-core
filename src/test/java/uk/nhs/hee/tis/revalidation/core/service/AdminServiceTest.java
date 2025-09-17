@@ -51,7 +51,7 @@ class AdminServiceTest {
   private AdminService service;
 
   @Mock
-  private CognitoIdentityProviderClient identityProvider;
+  private CognitoIdentityProviderClient cognitoIdentityProviderClient;
 
   @BeforeEach
   void setUp() {
@@ -60,18 +60,19 @@ class AdminServiceTest {
     field.setAccessible(true);
     ReflectionUtils.setField(field, mapper, new AdminUtil());
 
-    service = new AdminService(identityProvider, mapper);
+    service = new AdminService(cognitoIdentityProviderClient, mapper);
   }
 
   @Test
   void shouldReturnEmptyListWhenNoAssignableAdminsFound() {
     // Given.
-    ListUsersInGroupResponse listUsersInGroupResult = ListUsersInGroupResponse.builder()
+    ListUsersInGroupResponse listUsersInGroupResponse = ListUsersInGroupResponse.builder()
         .users(Collections.emptyList())
         .build();
 
-    when(identityProvider.listUsersInGroup(any(ListUsersInGroupRequest.class))).thenReturn(
-        listUsersInGroupResult);
+    when(cognitoIdentityProviderClient.listUsersInGroup(
+        any(ListUsersInGroupRequest.class))).thenReturn(
+        listUsersInGroupResponse);
 
     // When.
     List<AdminDto> assignableAdmins = service.getAssignableAdmins();
@@ -84,54 +85,55 @@ class AdminServiceTest {
   void shouldReturnAdminsWhenAssignableAdminsFound() {
     // Given.
     UserType user1 = UserType.builder()
+        .username("user1")
         .build();
-    user1 = user1.toBuilder().username("user1").build();
 
     UserType user2 = UserType.builder()
+        .username("user2")
         .build();
-    user2 = user2.toBuilder().username("user2").build();
 
     AttributeType attributeType1 = AttributeType.builder()
+        .name("family_name")
+        .value("user1")
         .build();
-    attributeType1 = attributeType1.toBuilder().name("family_name").build();
-    attributeType1 = attributeType1.toBuilder().value("user1").build();
 
     AttributeType attributeType2 = AttributeType.builder()
+        .name("family_name")
+        .value("user2")
         .build();
-    attributeType2 = attributeType2.toBuilder().name("family_name").build();
-    attributeType2 = attributeType2.toBuilder().value("user2").build();
 
     AttributeType attributeType3 = AttributeType.builder()
+        .name("given_name")
+        .value("user1")
         .build();
-    attributeType3 = attributeType3.toBuilder().name("given_name").build();
-    attributeType3 = attributeType3.toBuilder().value("user1").build();
 
     AttributeType attributeType4 = AttributeType.builder()
+        .name("given_name")
+        .value("user2")
         .build();
-    attributeType4 = attributeType4.toBuilder().name("given_name").build();
-    attributeType4 = attributeType4.toBuilder().value("user2").build();
 
     AttributeType attributeType5 = AttributeType.builder()
+        .name("email")
+        .value("user1@email.com")
         .build();
-    attributeType5 = attributeType5.toBuilder().name("email").build();
-    attributeType5 = attributeType5.toBuilder().value("user1@email.com").build();
 
     AttributeType attributeType6 = AttributeType.builder()
+        .name("email")
+        .value("user2@email.com")
         .build();
-    attributeType6 = attributeType6.toBuilder().name("email").build();
-    attributeType6 = attributeType6.toBuilder().value("user2@email.com").build();
 
     user1 = user1.toBuilder()
         .attributes(Arrays.asList(attributeType1, attributeType3, attributeType5)).build();
     user2 = user2.toBuilder()
         .attributes(Arrays.asList(attributeType2, attributeType4, attributeType6)).build();
 
-    ListUsersInGroupResponse listUsersInGroupResult = ListUsersInGroupResponse.builder()
+    ListUsersInGroupResponse listUsersInGroupResponse = ListUsersInGroupResponse.builder()
         .users(Arrays.asList(user1, user2))
         .build();
 
-    when(identityProvider.listUsersInGroup(any(ListUsersInGroupRequest.class))).thenReturn(
-        listUsersInGroupResult);
+    when(cognitoIdentityProviderClient.listUsersInGroup(
+        any(ListUsersInGroupRequest.class))).thenReturn(
+        listUsersInGroupResponse);
 
     // When.
     List<AdminDto> admins = service.getAssignableAdmins();

@@ -40,11 +40,11 @@ public class AdminService {
   @Value("${app.cognito.admin-user-pool}")
   private String adminUserPool;
 
-  private CognitoIdentityProviderClient identityProvider;
+  private final CognitoIdentityProviderClient cognitoIdentityProviderClient;
   private AdminMapper mapper;
 
-  AdminService(CognitoIdentityProviderClient identityProvider, AdminMapper mapper) {
-    this.identityProvider = identityProvider;
+  AdminService(CognitoIdentityProviderClient cognitoIdentityProviderClient, AdminMapper mapper) {
+    this.cognitoIdentityProviderClient = cognitoIdentityProviderClient;
     this.mapper = mapper;
   }
 
@@ -60,8 +60,9 @@ public class AdminService {
         .build();
 
     // TODO: A limited number of users can be returned before pagination occurs, handle pagination.
-    ListUsersInGroupResponse listUsersResult = identityProvider.listUsersInGroup(request);
-    List<UserType> userTypeList = listUsersResult.users();
+    ListUsersInGroupResponse listUsersResponse = cognitoIdentityProviderClient.listUsersInGroup(
+        request);
+    List<UserType> userTypeList = listUsersResponse.users();
 
     return mapper.toDtos(userTypeList);
   }
