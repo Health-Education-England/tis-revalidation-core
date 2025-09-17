@@ -27,7 +27,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -84,23 +83,11 @@ class AdminServiceTest {
   @Test
   void shouldReturnAdminsWhenAssignableAdminsFound() {
     // Given.
-    UserType user1 = buildUser("user1");
-    UserType user2 = buildUser("user2");
-
-    AttributeType attributeType1 = buildAttributeType("family_name", "user1");
-    AttributeType attributeType2 = buildAttributeType("family_name", "user2");
-    AttributeType attributeType3 = buildAttributeType("given_name", "user1");
-    AttributeType attributeType4 = buildAttributeType("given_name", "user2");
-    AttributeType attributeType5 = buildAttributeType("email", "user1@email.com");
-    AttributeType attributeType6 = buildAttributeType("email", "user2@email.com");
-
-    user1 = user1.toBuilder()
-        .attributes(Arrays.asList(attributeType1, attributeType3, attributeType5)).build();
-    user2 = user2.toBuilder()
-        .attributes(Arrays.asList(attributeType2, attributeType4, attributeType6)).build();
+    UserType user1 = buildUser(1);
+    UserType user2 = buildUser(2);
 
     ListUsersInGroupResponse listUsersInGroupResponse = ListUsersInGroupResponse.builder()
-        .users(Arrays.asList(user1, user2))
+        .users(List.of(user1, user2))
         .build();
 
     when(cognitoIdentityProviderClient.listUsersInGroup(
@@ -114,18 +101,25 @@ class AdminServiceTest {
     assertThat("Unexpected number of admins.", admins.size(), is(2));
 
     AdminDto admin = admins.get(0);
-    assertThat("Unexpected username.", admin.getUsername(), is("user1"));
+    assertThat("Unexpected username.", admin.getUsername(), is("username1"));
     assertThat("Unexpected full name.", admin.getFullName(), is("user1 user1"));
-    assertThat("Unexpected email.", admin.getEmail(), is("user1@email.com"));
+    assertThat("Unexpected email.", admin.getEmail(), is("user1@tis.nhs.uk"));
 
     admin = admins.get(1);
-    assertThat("Unexpected username.", admin.getUsername(), is("user2"));
+    assertThat("Unexpected username.", admin.getUsername(), is("username2"));
     assertThat("Unexpected full name.", admin.getFullName(), is("user2 user2"));
-    assertThat("Unexpected email.", admin.getEmail(), is("user2@email.com"));
+    assertThat("Unexpected email.", admin.getEmail(), is("user2@tis.nhs.uk"));
   }
 
-  private UserType buildUser(String username) {
-    return UserType.builder().username(username).build();
+  private UserType buildUser(int id) {
+    return UserType.builder()
+        .username(String.format("username%d", id))
+        .attributes(List.of(
+            buildAttributeType("family_name", String.format("user%d", id)),
+            buildAttributeType("given_name", String.format("user%d", id)),
+            buildAttributeType("email", String.format("user%d@tis.nhs.uk", id))
+        ))
+        .build();
   }
 
   private AttributeType buildAttributeType(String name, String value) {
