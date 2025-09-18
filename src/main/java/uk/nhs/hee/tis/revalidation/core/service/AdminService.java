@@ -21,13 +21,13 @@
 
 package uk.nhs.hee.tis.revalidation.core.service;
 
-import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProvider;
-import com.amazonaws.services.cognitoidp.model.ListUsersInGroupRequest;
-import com.amazonaws.services.cognitoidp.model.ListUsersInGroupResult;
-import com.amazonaws.services.cognitoidp.model.UserType;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityProviderClient;
+import software.amazon.awssdk.services.cognitoidentityprovider.model.ListUsersInGroupRequest;
+import software.amazon.awssdk.services.cognitoidentityprovider.model.ListUsersInGroupResponse;
+import software.amazon.awssdk.services.cognitoidentityprovider.model.UserType;
 import uk.nhs.hee.tis.revalidation.core.dto.AdminDto;
 import uk.nhs.hee.tis.revalidation.core.mapper.AdminMapper;
 
@@ -40,11 +40,11 @@ public class AdminService {
   @Value("${app.cognito.admin-user-pool}")
   private String adminUserPool;
 
-  private AWSCognitoIdentityProvider identityProvider;
+  private final CognitoIdentityProviderClient cognitoIdentityProviderClient;
   private AdminMapper mapper;
 
-  AdminService(AWSCognitoIdentityProvider identityProvider, AdminMapper mapper) {
-    this.identityProvider = identityProvider;
+  AdminService(CognitoIdentityProviderClient cognitoIdentityProviderClient, AdminMapper mapper) {
+    this.cognitoIdentityProviderClient = cognitoIdentityProviderClient;
     this.mapper = mapper;
   }
 
@@ -54,13 +54,15 @@ public class AdminService {
    * @return A list of admins.
    */
   public List<AdminDto> getAssignableAdmins() {
-    ListUsersInGroupRequest request = new ListUsersInGroupRequest();
-    request.setGroupName(adminGroup);
-    request.setUserPoolId(adminUserPool);
+    ListUsersInGroupRequest request = ListUsersInGroupRequest.builder()
+        .groupName(adminGroup)
+        .userPoolId(adminUserPool)
+        .build();
 
     // TODO: A limited number of users can be returned before pagination occurs, handle pagination.
-    ListUsersInGroupResult listUsersResult = identityProvider.listUsersInGroup(request);
-    List<UserType> userTypeList = listUsersResult.getUsers();
+    ListUsersInGroupResponse listUsersResponse = cognitoIdentityProviderClient.listUsersInGroup(
+        request);
+    List<UserType> userTypeList = listUsersResponse.users();
 
     return mapper.toDtos(userTypeList);
   }

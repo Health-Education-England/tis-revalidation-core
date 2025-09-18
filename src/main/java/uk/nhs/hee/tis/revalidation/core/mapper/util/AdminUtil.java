@@ -21,7 +21,6 @@
 
 package uk.nhs.hee.tis.revalidation.core.mapper.util;
 
-import com.amazonaws.services.cognitoidp.model.AttributeType;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -29,46 +28,61 @@ import java.lang.annotation.Target;
 import java.util.List;
 import org.mapstruct.Qualifier;
 import org.springframework.stereotype.Component;
+import software.amazon.awssdk.services.cognitoidentityprovider.model.AttributeType;
+import software.amazon.awssdk.services.cognitoidentityprovider.model.UserType;
 
 @Component
 public class AdminUtil {
 
+  @Email
+  public String email(UserType userType) {
+    List<AttributeType> attributes = userType.attributes();
+    return attributes.stream()
+        .filter(attr -> "email".equals(attr.name()))
+        .map(AttributeType::value)
+        .findFirst()
+        .orElse("");
+  }
+
+  @FullName
+  public String fullName(UserType userType) {
+    List<AttributeType> attributes = userType.attributes();
+    String familyName = attributes.stream()
+        .filter(attr -> "family_name".equals(attr.name()))
+        .map(AttributeType::value)
+        .findFirst()
+        .orElse("");
+    String givenName = attributes.stream()
+        .filter(attr -> "given_name".equals(attr.name()))
+        .map(AttributeType::value)
+        .findFirst()
+        .orElse("");
+    return givenName + " " + familyName;
+  }
+
+  @Username
+  public String username(UserType userType) {
+    return userType.username();
+  }
+
   @Qualifier
   @Target(ElementType.METHOD)
-  @Retention(RetentionPolicy.SOURCE)
+  @Retention(RetentionPolicy.CLASS)
   public @interface Email {
 
   }
 
   @Qualifier
   @Target(ElementType.METHOD)
-  @Retention(RetentionPolicy.SOURCE)
+  @Retention(RetentionPolicy.CLASS)
   public @interface FullName {
 
   }
 
-  @Email
-  public String email(List<AttributeType> attributes) {
-    AttributeType emailAttributeType = attributes.stream()
-        .filter(attributeType -> attributeType.getName().equals("email")).findFirst().orElse(null);
+  @Qualifier
+  @Target(ElementType.METHOD)
+  @Retention(RetentionPolicy.CLASS)
+  public @interface Username {
 
-    return emailAttributeType != null ? emailAttributeType.getValue() : "";
-  }
-
-  @FullName
-  public String fullName(List<AttributeType> attributes) {
-    String familyName = "";
-    String givenName = "";
-
-    for (AttributeType attribute : attributes) {
-      if (attribute.getName().equals("family_name")) {
-        familyName = attribute.getValue();
-      }
-      if (attribute.getName().equals("given_name")) {
-        givenName = attribute.getValue();
-      }
-    }
-
-    return givenName + " " + familyName;
   }
 }
