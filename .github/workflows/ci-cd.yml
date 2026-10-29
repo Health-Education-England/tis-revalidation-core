@@ -7,8 +7,20 @@ on:
   workflow_dispatch:
 
 jobs:
+  check-branch:
+    name: Check the branch is main
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Refuse to run outside main
+        if: github.ref != 'refs/heads/main'
+        run: |
+          echo "::error::This workflow deploys from the branch it runs on, so it may only be run on main."
+          exit 1
+
   ci-cd:
     name: Build and deploy
+    needs: check-branch
     uses: health-education-england/.github/.github/workflows/ci-cd-gradle.yml@main
     with:
       cluster-prefix: revalidation
