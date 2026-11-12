@@ -19,6 +19,9 @@ configurations {
   }
 }
 
+// Spring Boot 2.5.x manages Lombok 1.18.22, which can't compile on JDK 21 (used for Sonar analysis).
+ext["lombok.version"] = "1.18.36"
+
 repositories {
   mavenCentral()
 }
